@@ -1,7 +1,7 @@
-# Личный проект «YetiCave» 
+# Личный проект «YetiCave»
 
 * Студент: [Елена Есина](https://up.htmlacademy.ru/php/2/user/261907).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Симонян](https://up.htmlacademy.ru/php/2/user/361963).
 
 ---
 
