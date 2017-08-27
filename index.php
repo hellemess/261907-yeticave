@@ -18,7 +18,7 @@ $now = strtotime('now');
 
 $hours_remaining = floor(($tomorrow - $now) / SECONDS_IN_HOUR);
 $hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
-$minutes_remaining = floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE)
+$minutes_remaining = floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE);
 $minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
