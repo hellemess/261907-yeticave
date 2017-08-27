@@ -13,20 +13,14 @@ $tomorrow = strtotime('tomorrow midnight');
 // временная метка для настоящего времени
 $now = strtotime('now');
 
-$hours_remaining = floor(($tomorrow - $now) / 3600);
+define('SECONDS_IN_HOUR', 3600);
+define('SECONDS_IN_MINUTE', 60);
 
-if ($hours_remaining < 10) {
-    $hours_remaining = "0" . $hours_remaining;
-}
-
-$minutes_remaining = floor(($tomorrow - $now) % 3600 / 60);
-
-if ($minutes_remaining < 10) {
-    $minutes_remaining = "0" . $minutes_remaining;
-}
+$hours_remaining = str_pad(floor(($tomorrow - $now) / SECONDS_IN_HOUR), 2, '0', STR_PAD_LEFT);
+$minutes_remaining = str_pad(floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE), 2, '0', STR_PAD_LEFT);
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
-$lot_time_remaining = $hours_remaining . ":" . $minutes_remaining;
+$lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
 ?>
 <!DOCTYPE html>
 <html lang="ru">
