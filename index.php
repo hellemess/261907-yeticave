@@ -1,4 +1,7 @@
 <?php
+define('SECONDS_IN_HOUR', 3600);
+define('SECONDS_IN_MINUTE', 60);
+
 $is_auth = (bool) rand(0, 1);
 
 $user_name = 'Константин';
@@ -13,11 +16,10 @@ $tomorrow = strtotime('tomorrow midnight');
 // временная метка для настоящего времени
 $now = strtotime('now');
 
-define('SECONDS_IN_HOUR', 3600);
-define('SECONDS_IN_MINUTE', 60);
-
-$hours_remaining = str_pad(floor(($tomorrow - $now) / SECONDS_IN_HOUR), 2, '0', STR_PAD_LEFT);
-$minutes_remaining = str_pad(floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE), 2, '0', STR_PAD_LEFT);
+$hours_remaining = floor(($tomorrow - $now) / SECONDS_IN_HOUR);
+$hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
+$minutes_remaining = floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE)
+$minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
