@@ -1,6 +1,6 @@
 <?php
-define("SECONDS_IN_HOUR", 3600);
 define("SECONDS_IN_MINUTE", 60);
+define("SECONDS_IN_HOUR", 3600);
 
 $is_auth = (bool) rand(0, 1);
 
@@ -145,24 +145,24 @@ $lot_time_remaining = $hours_remaining . ":" . $minutes_remaining;
             <h2>Открытые лоты</h2>
             <select class="lots__select">
                 <option>Все категории</option>
-                <?php foreach ($categories as $key => $value): ?>
-                <option><?=$value; ?></option>
+                <?php foreach ($categories as $category): ?>
+                <option><?=$category; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <ul class="lots__list">
-        <?php foreach ($lots as $key => $value): ?>
+        <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
-                    <img src="<?=$value["picture"]; ?>" width="350" height="260" alt="<?=$value["alt"]; ?>">
+                    <img src="<?=$lot["picture"]; ?>" width="350" height="260" alt="<?=$lot["alt"]; ?>">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?=$value["category"]; ?></span>
-                    <h3 class="lot__title"><a class="text-link" href="lot.html"><?=$value["title"]; ?></a></h3>
+                    <span class="lot__category"><?=$lot["category"]; ?></span>
+                    <h3 class="lot__title"><a class="text-link" href="lot.html"><?=$lot["title"]; ?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$value["price"]; ?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=$lot["price"]; ?><b class="rub">р</b></span>
                         </div>
                         <div class="lot__timer timer">
                             <?=$lot_time_remaining; ?>
