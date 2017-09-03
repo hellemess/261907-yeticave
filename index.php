@@ -1,28 +1,75 @@
 <?php
-define('SECONDS_IN_HOUR', 3600);
-define('SECONDS_IN_MINUTE', 60);
+define("SECONDS_IN_MINUTE", 60);
+define("SECONDS_IN_HOUR", 3600);
 
 $is_auth = (bool) rand(0, 1);
 
-$user_name = 'Константин';
-$user_avatar = 'img/user.jpg';
+$user_name = "Константин";
+$user_avatar = "img/user.jpg";
+
+$categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
+
+$lots = [
+  [
+    "title" => "2014 Rossignol District Snowboard",
+    "category" => "Доски и лыжи",
+    "price" => 10999,
+    "picture" => "img/lot-1.jpg",
+    "alt" => "Сноуборд"
+  ],
+  [
+    "title" => "DC Ply Mens 2016/2017 Snowboard",
+    "category" => "Доски и лыжи",
+    "price" => 159999,
+    "picture" => "img/lot-2.jpg",
+    "alt" => "Сноуборд"
+  ],
+  [
+    "title" => "Крепления Union Contact Pro 2015 года размер L/XL",
+    "category" => "Крепления",
+    "price" => 8000,
+    "picture" => "img/lot-3.jpg",
+    "alt" => "Крепления"
+  ],
+  [
+    "title" => "Ботинки для сноуборда DC Mutiny Charocal",
+    "category" => "Ботинки",
+    "price" => 10999,
+    "picture" => "img/lot-4.jpg",
+    "alt" => "Ботинки"
+  ],
+  [
+    "title" => "Куртка для сноуборда DC Mutiny Charocal",
+    "category" => "Одежда",
+    "price" => 7500,
+    "picture" => "img/lot-5.jpg",
+    "alt" => "Куртка"
+  ],
+  [
+    "title" => "Маска Oakley Canopy",
+    "category" => "Разное",
+    "price" => 5400,
+    "picture" => "img/lot-6.jpg",
+    "alt" => "Маска"
+  ]
+];
 
 // устанавливаем часовой пояс в Московское время
-date_default_timezone_set('Europe/Moscow');
+date_default_timezone_set("Europe/Moscow");
 
 // временная метка для полночи следующего дня
-$tomorrow = strtotime('tomorrow midnight');
+$tomorrow = strtotime("tomorrow midnight");
 
 // временная метка для настоящего времени
-$now = strtotime('now');
+$now = strtotime("now");
 
 $hours_remaining = floor(($tomorrow - $now) / SECONDS_IN_HOUR);
-$hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
+$hours_remaining = str_pad($hours_remaining, 2, "0", STR_PAD_LEFT);
 $minutes_remaining = floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE);
-$minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
+$minutes_remaining = str_pad($minutes_remaining, 2, "0", STR_PAD_LEFT);
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
-$lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
+$lot_time_remaining = $hours_remaining . ":" . $minutes_remaining;
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -98,26 +145,24 @@ $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
             <h2>Открытые лоты</h2>
             <select class="lots__select">
                 <option>Все категории</option>
-                <option>Доски и лыжи</option>
-                <option>Крепления</option>
-                <option>Ботинки</option>
-                <option>Одежда</option>
-                <option>Инструменты</option>
-                <option>Разное</option>
+                <?php foreach ($categories as $category): ?>
+                <option><?=$category; ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         <ul class="lots__list">
+        <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
-                    <img src="img/lot-1.jpg" width="350" height="260" alt="Сноуборд">
+                    <img src="<?=$lot["picture"]; ?>" width="350" height="260" alt="<?=$lot["alt"]; ?>">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category">Доски и лыжи</span>
-                    <h3 class="lot__title"><a class="text-link" href="lot.html">2014 Rossignol District Snowboard</a></h3>
+                    <span class="lot__category"><?=$lot["category"]; ?></span>
+                    <h3 class="lot__title"><a class="text-link" href="lot.html"><?=$lot["title"]; ?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost">10 999<b class="rub">р</b></span>
+                            <span class="lot__cost"><?=$lot["price"]; ?><b class="rub">р</b></span>
                         </div>
                         <div class="lot__timer timer">
                             <?=$lot_time_remaining; ?>
@@ -125,6 +170,7 @@ $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
                     </div>
                 </div>
             </li>
+        <?php endforeach; ?>
         </ul>
     </section>
 </main>
