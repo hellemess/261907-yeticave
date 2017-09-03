@@ -1,5 +1,9 @@
 <?php
 
+define('SECONDS_IN_MINUTE', 60);
+define('SECONDS_IN_HOUR', 3600);
+define('SECONDS_IN_DAY', 86400);
+
 // ставки пользователей, которыми надо заполнить таблицу
 $bets = [
     ['name' => 'Иван', 'price' => 11500, 'ts' => strtotime('-' . rand(1, 50) .' minute')],
@@ -7,8 +11,62 @@ $bets = [
     ['name' => 'Евгений', 'price' => 10500, 'ts' => strtotime('-' . rand(25, 50) .' hour')],
     ['name' => 'Семён', 'price' => 10000, 'ts' => strtotime('last week')]
 ];
-?>
 
+function convert_ts($ts) {
+    $now = strtotime('now');
+    $time_passed = $now - $ts;
+
+    if ($time_passed < SECONDS_IN_MINUTE) {
+        $time_passed = 'Только что';
+    } elseif ($time_passed < SECONDS_IN_HOUR) {
+        $time_passed = floor($time_passed / SECONDS_IN_MINUTE);
+
+        if ($time_passed == 1) {
+            $time_passed = 'Минуту назад';
+        } elseif ($time_passed > 10 && $time_passed < 20) {
+            $time_passed = $time_passed . ' минут назад';
+        } else {
+            switch ($time_passed % 10) {
+                case 1:
+                    $time_passed = $time_passed . ' минуту назад';
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    $time_passed = $time_passed . ' минуты назад';
+                    break;
+                default:
+                    $time_passed = $time_passed . ' минут назад';
+            }
+        }
+    } elseif ($time_passed < SECONDS_IN_DAY) {
+        $time_passed = floor($time_passed / SECONDS_IN_HOUR);
+
+        if ($time_passed == 1) {
+            $time_passed = 'Час назад';
+        } elseif ($time_passed > 10 && $time_passed < 20) {
+            $time_passed = $time_passed . ' часов назад';
+        } else {
+            switch ($time_passed % 10) {
+                case 1:
+                    $time_passed = $time_passed . ' час назад';
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    $time_passed = $time_passed . ' часа назад';
+                    break;
+                default:
+                    $time_passed = $time_passed . ' часов назад';
+            }
+        }
+    } else {
+        $time_passed = date('d.m.y в H:i', $ts);
+    }
+
+    return $time_passed;
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -111,11 +169,13 @@ $bets = [
                     <h3>История ставок (<span>4</span>)</h3>
                     <!-- заполните эту таблицу данными из массива $bets-->
                     <table class="history__list">
+                    <?php foreach ($bets as $bet): ?>
                         <tr class="history__item">
-                            <td class="history__name"><!-- имя автора--></td>
-                            <td class="history__price"><!-- цена--> р</td>
-                            <td class="history__time"><!-- дата в человеческом формате--></td>
+                            <td class="history__name"><?=$bet['name']; ?></td>
+                            <td class="history__price"><?=$bet['price']; ?> р</td>
+                            <td class="history__time"><?=convert_ts($bet['ts']); ?></td>
                         </tr>
+                    <?php endforeach; ?>
                     </table>
                 </div>
             </div>
