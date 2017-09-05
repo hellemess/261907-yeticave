@@ -1,6 +1,8 @@
 <?php
 
 function get_html_code($template, $data) {
+    extract($data);
+
     $html_code = '';
 
     if (file_exists($template)) {

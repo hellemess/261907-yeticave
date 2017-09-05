@@ -27,13 +27,13 @@
         <h2>Открытые лоты</h2>
         <select class="lots__select">
             <option>Все категории</option>
-            <?php foreach ($data['categories'] as $category): ?>
+            <?php foreach ($categories as $category): ?>
             <option><?=$category; ?></option>
             <?php endforeach; ?>
         </select>
     </div>
     <ul class="lots__list">
-    <?php foreach ($data['lots'] as $lot): ?>
+    <?php foreach ($lots as $lot): ?>
         <li class="lots__item lot">
             <div class="lot__image">
                 <img src="<?=$lot['picture']; ?>" width="350" height="260" alt="<?=htmlspecialchars($lot['alt']); ?>">
@@ -47,7 +47,7 @@
                         <span class="lot__cost"><?=$lot['price']; ?><b class="rub">р</b></span>
                     </div>
                     <div class="lot__timer timer">
-                        <?=$data['lot_time_remaining']; ?>
+                        <?=$lot_time_remaining; ?>
                     </div>
                 </div>
             </div>
