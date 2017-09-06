@@ -55,6 +55,12 @@ function convert_ts($ts) {
     return $time_passed;
 }
 
+function format_price($price) {
+    $price = $price > 9999 ? number_format($price, 0, ',', ' ') : $price;
+
+    return $price;
+}
+
 function get_html_code($template, $data) {
     extract($data);
 

@@ -17,20 +17,37 @@ $bets = [
     ['name' => 'Семён', 'price' => 10000, 'ts' => strtotime('last week')]
 ];
 
+require_once 'functions.php';
 require_once 'lots.php';
 
-if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
-    $lot = $lots[$_GET['id']];
+$data = [
+    'is_auth' => $is_auth,
+    'user_avatar' => $user_avatar,
+    'user_name' => $user_name
+];
 
-    require_once 'functions.php';
+if (isset($_GET['id']) and isset($lots[$_GET['id']]) || $_GET['id'] == 'success') {
+    $lot = isset($lots[$_GET['id']]) ? $lots[$_GET['id']] : $fields;
+    $data['title'] = 'Yeti Cave — ' . htmlspecialchars($lot['title']);
 
-    $content = get_html_code('templates/lot.php', ['lot' => $lot, 'bets' => $bets]);
-
-    $html_code = get_html_code('templates/layout.php', ['title' => 'Yeti Cave — ' . htmlspecialchars($lot['title']), 'is_auth' => $is_auth, 'user_avatar' => $user_avatar, 'user_name' => $user_name, 'content' => $content]);
-
-    print($html_code);
+    $data['content'] = get_html_code(
+        'templates/lot.php',
+        [
+            'lot' => $lot,
+            'bets' => $bets
+        ]
+    );
 } else {
     http_response_code(404);
+    $data['title'] = 'Yeti Cave — ' . 'Лот не найден';
+    $data['content'] = '<div class="container"><h1>404</h1><p>Лот не найден. Вернитесь на <a class="text-link" href="index.php">главную страницу</a> и выберите другой лот.</p></div>';
 }
+
+$html_code = get_html_code(
+    'templates/layout.php',
+    $data
+);
+
+print($html_code);
 
 ?>

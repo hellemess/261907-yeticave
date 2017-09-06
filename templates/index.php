@@ -1,3 +1,6 @@
+<?php
+require_once 'functions.php';
+?>
 <section class="promo">
     <h2 class="promo__title">Нужен стафф для катки?</h2>
     <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
@@ -44,7 +47,7 @@
                 <div class="lot__state">
                     <div class="lot__rate">
                         <span class="lot__amount">Стартовая цена</span>
-                        <span class="lot__cost"><?=$lot['starting_price']; ?><b class="rub">р</b></span>
+                        <span class="lot__cost"><?=format_price($lot['starting_price']); ?><b class="rub">р</b></span>
                     </div>
                     <div class="lot__timer timer">
                         <?=$lot_time_remaining; ?>
