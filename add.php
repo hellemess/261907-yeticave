@@ -48,14 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fields['current_price'] = $fields['starting-price'];
         $fields['starting_price'] = $fields['starting-price'];
         unset($fields['starting-price']);
-        $content = get_html_code(
-            'templates/lot.php',
-            [
-                'lot' => $fields,
-                'bets' => []
-            ]
-        );
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !count($errors)) {
+    $content = get_html_code(
+        'templates/lot.php',
+        [
+            'lot' => $fields,
+            'bets' => []
+        ]
+    );
 } else {
     $content = get_html_code(
         'templates/add.php',
