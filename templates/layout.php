@@ -11,7 +11,7 @@
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>
-        <a class="main-header__logo">
+        <a class="main-header__logo" <?=$_SERVER['REQUEST_URI'] == '/index.php' ? '' : 'href="index.php"'; ?>>
             <img src="img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
         <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru">
@@ -42,7 +42,7 @@
     </div>
 </header>
 
-<main class="container"><?=$content; ?></main>
+<main <?=$_SERVER['REQUEST_URI'] == '/index.php' ? 'class="container"' : ''; ?>><?=$content; ?></main>
 
 <footer class="main-footer">
     <nav class="nav">
