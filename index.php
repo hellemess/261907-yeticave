@@ -30,9 +30,25 @@ $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
 
 require_once 'functions.php';
 
-$content = get_html_code('templates/index.php', ['categories' => $categories, 'lots' => $lots, 'lot_time_remaining' => $lot_time_remaining]);
+$content = get_html_code(
+    'templates/index.php',
+    [
+        'categories' => $categories,
+        'lots' => $lots,
+        'lot_time_remaining' => $lot_time_remaining
+    ]
+);
 
-$html_code = get_html_code('templates/layout.php', ['title' => 'Yeti Cave — Главная', 'is_auth' => $is_auth, 'user_avatar' => $user_avatar, 'user_name' => $user_name, 'content' => $content]);
+$html_code = get_html_code(
+    'templates/layout.php',
+    [
+        'title' => 'Yeti Cave — Главная',
+        'is_auth' => $is_auth,
+        'user_avatar' => $user_avatar,
+        'user_name' => $user_name,
+        'content' => $content
+    ]
+);
 
 print($html_code);
 ?>
