@@ -4,6 +4,8 @@ $is_auth = (bool) rand(0, 1);
 $user_name = 'Константин';
 $user_avatar = 'img/user.jpg';
 
+$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+
 $fields = [
     'title' => '',
     'category' => '',
@@ -18,14 +20,13 @@ $rules = [
     'numeric_fields' => ['starting_price', 'step']
 ];
 
-$errors = [];
-
 require_once 'functions.php';
 require_once 'lots.php';
 
 if (!empty($_POST)) {
-    $fields = validate_data($fields, $rules, $errors, $lots)['fields'];
-    $errors = validate_data($fields, $rules, $errors, $lots)['errors'];
+    $validation_data = validate_data($fields, $rules, $lots);
+    $fields = $validation_data['fields'];
+    $errors = $validation_data['errors'];
 }
 
 if (!empty($_POST) && empty($errors)) {
@@ -40,6 +41,7 @@ if (!empty($_POST) && empty($errors)) {
     $content = get_html_code(
         'templates/add.php',
         [
+            'categories' => $categories,
             'errors' => $errors,
             'fields' => $fields
         ]

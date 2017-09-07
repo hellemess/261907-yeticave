@@ -91,7 +91,9 @@ function post($key = null, $default_value = '') {
     }
 }
 
-function validate_data($fields, $rules, $errors, $lots) {
+function validate_data($fields, $rules, $lots) {
+    $errors = [];
+
     foreach (post() as $key => $value) {
         $key = str_replace('-', '_', $key);
 
