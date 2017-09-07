@@ -26,9 +26,9 @@ $data = [
     'user_name' => $user_name
 ];
 
-if (isset($_GET['id']) and isset($lots[$_GET['id']]) || $_GET['id'] == 'success') {
-    $lot = isset($lots[$_GET['id']]) ? $lots[$_GET['id']] : $fields;
-    $data['title'] = 'Yeti Cave — ' . htmlspecialchars($lot['title']);
+if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
+    $lot = $lots[$_GET['id']];
+    $data['title'] = 'Yeti Cave — ' . $lot['title'];
 
     $data['content'] = get_html_code(
         'templates/lot.php',

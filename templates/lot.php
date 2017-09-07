@@ -24,14 +24,14 @@ require_once 'functions.php';
     </ul>
 </nav>
 <section class="lot-item container">
-    <h2><?=htmlspecialchars($lot['title']); ?></h2>
+    <h2><?=$lot['title']; ?></h2>
     <div class="lot-item__content">
         <div class="lot-item__left">
             <div class="lot-item__image">
-                <img src="<?=$lot['picture']; ?>" width="730" height="548" alt="<?=htmlspecialchars($lot['alt']); ?>">
+                <img src="<?=$lot['picture']; ?>" width="730" height="548" alt="<?=$lot['alt']; ?>">
             </div>
             <p class="lot-item__category">Категория: <span><?=$lot['category']; ?></span></p>
-            <p class="lot-item__description"><?=htmlspecialchars($lot['description']); ?></p>
+            <p class="lot-item__description"><?=$lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
             <div class="lot-item__state">

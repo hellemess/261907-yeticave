@@ -75,4 +75,54 @@ function get_html_code($template, $data) {
     return $html_code;
 }
 
+function post($key = null, $default_value = '') {
+    if ($key) {
+        $value = isset($_POST[$key]) ? htmlspecialchars($_POST[$key]) : $default_value;
+
+        return $value;
+    } else {
+        $array = [];
+
+        foreach ($_POST as $key => $value) {
+            $array[$key] = htmlspecialchars($_POST[$key]);
+        }
+
+        return $array;
+    }
+}
+
+function validate_data($fields, $rules, $errors, $lots) {
+    foreach (post() as $key => $value) {
+        $key = str_replace('-', '_', $key);
+
+        if (in_array($key, $rules['required_fields']) && ($value == '' || $value == 'Выберите категорию')) {
+            $errors[$key] = 'Заполните это поле.';
+        }
+
+        if (in_array($key, $rules['numeric_fields']) && !is_numeric($value)) {
+            $errors[$key] = 'Введите число.';
+        }
+
+        $fields[$key] = $value;
+    }
+
+    if (!empty($_FILES['picture']['name'])) {
+        $file_name = 'lot-' . (count($lots) + 1) . '.' . substr($_FILES['picture']['type'], 6);
+        $file_path = __DIR__ . '/img/';
+        move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
+    } else {
+        $errors['picture'] = 'Добавьте снимок лота.';
+    }
+
+    if (empty($errors)) {
+        $fields['picture'] = 'img/' . $file_name;
+        $fields['current_price'] = $fields['starting_price'];
+    }
+
+    return [
+        'fields' => $fields,
+        'errors' => $errors
+    ];
+}
+
 ?>
