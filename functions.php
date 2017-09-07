@@ -97,7 +97,7 @@ function validate_data($fields, $rules, $lots) {
     foreach (post() as $key => $value) {
         $key = str_replace('-', '_', $key);
 
-        if (in_array($key, $rules['required_fields']) && ($value == '' || $value == 'Выберите категорию')) {
+        if (in_array($key, $rules['required_fields']) && $value == '') {
             $errors[$key] = 'Заполните это поле.';
         }
 

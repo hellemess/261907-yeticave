@@ -31,7 +31,7 @@
   <div class="form__item <?=isset($errors['category']) ? 'form__item--invalid' : ''; ?>">
     <label for="category">Категория</label>
     <select id="category" name="category" required>
-      <option>Выберите категорию</option>
+      <option value="">Выберите категорию</option>
       <?php foreach ($categories as $category): ?>
       <option <?=$category == $fields['category'] ? 'selected' : ''; ?>><?=$category; ?></option>
       <?php endforeach; ?>
