@@ -23,6 +23,7 @@ require_once 'functions.php';
         </li>
     </ul>
 </nav>
+<?=$is_auth; ?>
 <section class="lot-item container">
     <h2><?=$lot['title']; ?></h2>
     <div class="lot-item__content">
@@ -43,11 +44,11 @@ require_once 'functions.php';
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost"><?=format_price($lot['current_price']); ?></span>
                     </div>
-                    <div class="lot-item__min-cost">
+                    <div class="lot-item__min-cost" style="<?=!$is_auth ? 'display: none;' : ''; ?>">
                         Мин. ставка <span><?=format_price($lot['current_price'] + $lot['step']); ?> р</span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
+                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" style="<?=!$is_auth ? 'display: none;' : ''; ?>">
                     <p class="lot-item__form-item">
                         <label for="cost">Ваша ставка</label>
                         <input id="cost" type="number" name="cost" placeholder="<?=format_price($lot['current_price'] + $lot['step']); ?>">
