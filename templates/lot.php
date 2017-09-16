@@ -23,7 +23,6 @@ require_once 'functions.php';
         </li>
     </ul>
 </nav>
-<?=$is_auth; ?>
 <section class="lot-item container">
     <h2><?=$lot['title']; ?></h2>
     <div class="lot-item__content">
