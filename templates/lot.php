@@ -34,6 +34,7 @@ require_once 'functions.php';
             <p class="lot-item__description"><?=$lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
+            <?php if ($is_auth): ?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
                     10:54:12
@@ -43,11 +44,11 @@ require_once 'functions.php';
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost"><?=format_price($lot['current_price']); ?></span>
                     </div>
-                    <div class="lot-item__min-cost" style="<?=!$is_auth ? 'display: none;' : ''; ?>">
+                    <div class="lot-item__min-cost">
                         Мин. ставка <span><?=format_price($lot['current_price'] + $lot['step']); ?> р</span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" style="<?=!$is_auth ? 'display: none;' : ''; ?>">
+                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
                     <p class="lot-item__form-item">
                         <label for="cost">Ваша ставка</label>
                         <input id="cost" type="number" name="cost" placeholder="<?=format_price($lot['current_price'] + $lot['step']); ?>">
@@ -55,6 +56,7 @@ require_once 'functions.php';
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>
             </div>
+            <?php endif; ?>
             <div class="history">
                 <h3>История ставок (<span><?=count($bets); ?></span>)</h3>
                 <!-- заполните эту таблицу данными из массива $bets-->

@@ -1,7 +1,12 @@
 <?php
 session_start();
 
-$is_auth = false;
+if (isset($_SESSION['user']['name'])) {
+    $is_auth = true;
+    $user_name = $_SESSION['user']['name'];
+} else {
+    $is_auth = false;
+}
 
 require_once 'functions.php';
 
@@ -33,23 +38,15 @@ if (!empty($_POST) && empty($errors)) {
             $errors['password'] = 'Вы ввели неверный пароль';
         }
     }
-
-    $content = get_html_code(
-        'templates/login.php',
-        [
-            'errors' => $errors,
-            'fields' => $fields
-        ]
-    );
-} else {
-    $content = get_html_code(
-        'templates/login.php',
-        [
-            'errors' => $errors,
-            'fields' => $fields
-        ]
-    );
 }
+
+$content = get_html_code(
+    'templates/login.php',
+    [
+        'errors' => $errors,
+        'fields' => $fields
+    ]
+);
 
 $html_code = get_html_code(
     'templates/layout.php',
