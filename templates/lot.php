@@ -34,7 +34,7 @@ require_once 'functions.php';
             <p class="lot-item__description"><?=$lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
-            <?php if ($is_auth): ?>
+            <?php if ($is_auth && !$is_bet_placed): ?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
                     10:54:12
@@ -45,13 +45,14 @@ require_once 'functions.php';
                         <span class="lot-item__cost"><?=format_price($lot['current_price']); ?></span>
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span><?=format_price($lot['current_price'] + $lot['step']); ?> р</span>
+                        Мин. ставка <span><?=format_price($min); ?> р</span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
-                    <p class="lot-item__form-item">
+                <form class="lot-item__form" action="/lot.php?id=<?=$lot['id']; ?>" method="post">
+                    <p class="lot-item__form-item <?=!empty($errors) ? 'form__item--invalid' : ''; ?>">
                         <label for="cost">Ваша ставка</label>
-                        <input id="cost" type="number" name="cost" placeholder="<?=format_price($lot['current_price'] + $lot['step']); ?>">
+                        <input id="cost" type="number" name="cost" placeholder="<?=format_price($min); ?>" min="<?=format_price($min); ?>" required>
+                        <span class="form__error" style="position: absolute;"><?=$errors['cost']; ?></span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>
