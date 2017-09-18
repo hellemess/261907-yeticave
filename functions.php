@@ -131,10 +131,12 @@ function post($key = null, $default_value = '') {
 
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
     foreach ($form_data['fields'] as $key => $value) {
-        if (in_array($key, $numeric_fields) && !is_numeric($value)) {
-            $form_data['errors'][$key] = 'Введите число.';
-        } elseif (is_numeric($value) && $value < $min) {
-            $form_data['errors'][$key] = 'Введите число больше ' . format_price($min);
+        if (in_array($key, $numeric_fields)) {
+            if (!is_numeric($value)) {
+                $form_data['errors'][$key] = 'Введите число.';
+            } elseif ($value < $min) {
+                $form_data['errors'][$key] = 'Введите число больше ' . format_price($min);
+            }
         }
     }
 

@@ -26,30 +26,37 @@ require_once 'lots.php';
 if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     $lot = $lots[$_GET['id']];
     $lot['id'] = $_GET['id'];
-    $min = $lot['current_price'] + $lot['step'];
     $data['title'] = 'Yeti Cave — ' . $lot['title'];
+    $is_betting_available = false;
 
-    if ($data['is_auth']) {
+    $content = [
+        'lot' => $lot,
+        'bets' => $bets
+    ];
+
+    if ($data['is_auth'] && isset($_COOKIE['BETS']))  {
+        $is_betting_available = true;
+        $user_bets = json_decode($_COOKIE['BETS'], true);
+
+        foreach ($user_bets as $bet) {
+            if ($bet['id'] == $lot['id']) {
+                $is_betting_available = false;
+            }
+        }
+    }
+
+    if ($is_betting_available) {
+        if (!isset($user_bets)) {
+            $user_bets = [];
+        }
+
         $fields = [
             'cost' => ''
         ];
 
         $required_fields = ['cost'];
         $numeric_fields = ['cost'];
-
-        if (isset($_COOKIE['BETS'])) {
-            $user_bets = json_decode($_COOKIE['BETS'], true);
-        } else {
-            $user_bets = [];
-        }
-
-        $is_bet_placed = false;
-
-        foreach ($user_bets as $bet) {
-            if ($bet['id'] == $lot['id']) {
-                $is_bet_placed = true;
-            }
-        }
+        $min = $lot['current_price'] + $lot['step'];
 
         if (!empty($_POST)) {
             $form_data = is_filled($fields, $required_fields);
@@ -71,19 +78,10 @@ if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
             header('Location: /mylots.php');
         }
 
-        $content = [
-            'lot' => $lot,
-            'min' => $min,
-            'bets' => $bets,
-            'is_bet_placed' => $is_bet_placed,
-            'fields' => $fields,
-            'errors' => $errors
-        ];
-    } else {
-        $content = [
-            'lot' => $lot,
-            'bets' => $bets
-        ];
+        $content['is_betting_available'] = $is_betting_available;
+        $content['min'] = $min;
+        $content['fields'] = $fields;
+        $content['errors'] = $errors;
     }
 
     $data['content'] = get_html_code(

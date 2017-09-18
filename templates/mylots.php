@@ -26,7 +26,7 @@ require_once 'functions.php';
 </nav>
 <section class="rates container">
 <h2>Мои ставки</h2>
-<?php if ($is_there_bets): ?>
+<?php if (!empty($user_bets)): ?>
 <table class="rates__list">
   <?php foreach ($user_bets as $bet): ?>
   <tr class="rates__item">

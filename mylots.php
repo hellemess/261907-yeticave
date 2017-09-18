@@ -6,16 +6,15 @@ require_once 'functions.php';
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
+    $user_bets = [];
 
     if (isset($_COOKIE['BETS'])) {
-        $is_there_bets = true;
         $user_bets = json_decode($_COOKIE['BETS'], true);
     }
 
     $content = get_html_code(
         'templates/mylots.php',
         [
-            'is_there_bets' => $is_there_bets,
             'user_bets' => array_reverse($user_bets)
         ]
     );
