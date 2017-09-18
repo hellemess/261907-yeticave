@@ -839,9 +839,10 @@ h2 {
 }
 
 .form__item--invalid textarea,
-.form__item--invalid input {
+.form__item--invalid input,
+.lot-item__form-item.form__item--invalid input {
   background: #ffffff url("../img/error.svg") 97% 11px no-repeat;
-  border-color: #f84646;
+  border: 1px solid #f84646;
 }
 
 .form__item--invalid select {

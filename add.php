@@ -59,6 +59,7 @@ if (isset($_SESSION['user']['name'])) {
     ];
 } else {
     $is_auth = false;
+    http_response_code(403);
 
     $data = [
         'title' => 'Yeti Cave — Доступ запрещен',

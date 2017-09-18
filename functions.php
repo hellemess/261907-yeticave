@@ -1,4 +1,7 @@
 <?php
+define('SECONDS_IN_MINUTE', 60);
+define('SECONDS_IN_HOUR', 3600);
+define('SECONDS_IN_DAY', 86400);
 
 function convert_ts($ts) {
     $now = strtotime('now');
@@ -126,10 +129,14 @@ function post($key = null, $default_value = '') {
     }
 }
 
-function validate_numeric_data($form_data, $numeric_fields) {
+function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
     foreach ($form_data['fields'] as $key => $value) {
-        if (in_array($key, $numeric_fields) && !is_numeric($value)) {
-            $form_data['errors'][$key] = 'Введите число.';
+        if (in_array($key, $numeric_fields)) {
+            if (!is_numeric($value)) {
+                $form_data['errors'][$key] = 'Введите число.';
+            } elseif ($value < $min) {
+                $form_data['errors'][$key] = 'Введите число больше ' . format_price($min);
+            }
         }
     }
 
