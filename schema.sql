@@ -5,39 +5,45 @@ CREATE DATABASE yeticave
 USE yeticave;
 
 CREATE TABLE categories (
-  id    INT(10) AUTO_INCREMENT PRIMARY KEY,
-  title CHAR(15)
+  id    INT(10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  title CHAR(15) NOT NULL
 );
 
 CREATE TABLE lots (
-  id              INT(10) AUTO_INCREMENT PRIMARY KEY,
-  creation_date   DATETIME,
-  title           CHAR(100),
-  description     TEXT,
-  picture         CHAR(20),
-  starting_price  INT,
-  expiration_date DATE,
-  step            INT,
+  id              INT(10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  creation_date   DATETIME NOT NULL,
+  title           CHAR(100) NOT NULL,
+  description     TEXT NOT NULL,
+  picture         CHAR(20) NOT NULL,
+  starting_price  INT NOT NULL,
+  expiration_date DATE NOT NULL,
+  step            INT NOT NULL,
   likes           INT,
-  seller          CHAR(100),
+  seller          CHAR(100) NOT NULL,
   winner          CHAR(100),
-  category        CHAR(15)
+  category        CHAR(15) NOT NULL,
+  FOREIGN KEY (seller) REFERENCES users (id),
+  FOREIGN KEY (winner) REFERENCES users (id),
+  FOREIGN KEY (category) REFERENCES categories (id)
+
 );
 
 CREATE TABLE bets (
-  id           INT(10) AUTO_INCREMENT PRIMARY KEY,
-  betting_date DATETIME,
-  cost         INT,
-  buyer        CHAR(100),
-  lot          INT
+  id           INT(10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  betting_date DATETIME NOT NULL,
+  cost         INT NOT NULL,
+  buyer        CHAR(100) NOT NULL,
+  lot          INT NOT NULL,
+  FOREIGN KEY (buyer) REFERENCES users (id),
+  FOREIGN KEY (lot) REFERENCES lots (id)
 );
 
 CREATE TABLE users (
-  id                INT(10) AUTO_INCREMENT PRIMARY KEY,
-  email             CHAR(100),
-  registration_date DATETIME,
-  name              CHAR,
-  password          CHAR(60),
+  id                INT(10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  email             CHAR(100) NOT NULL,
+  registration_date DATETIME NOT NULL,
+  name              CHAR NOT NULL,
+  password          CHAR(60) NOT NULL,
   avatar            CHAR(20),
   contacts          TEXT
 );
