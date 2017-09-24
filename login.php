@@ -62,4 +62,3 @@ $html_code = get_html_code(
 );
 
 print($html_code);
-?>

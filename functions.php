@@ -3,6 +3,8 @@ define('SECONDS_IN_MINUTE', 60);
 define('SECONDS_IN_HOUR', 3600);
 define('SECONDS_IN_DAY', 86400);
 
+require_once 'mysql_helper.php';
+
 function check_connection($link) {
     if (!$link) {
         $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
@@ -165,5 +167,3 @@ function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
 
     return $form_data;
 }
-
-?>
