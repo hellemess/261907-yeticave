@@ -83,6 +83,17 @@ function convert_ts($ts) {
     return $time_passed;
 }
 
+function execute_query($link, $sql, $data = []) {
+    $result = false;
+
+    if ($link) {
+        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
+        $result = mysqli_stmt_execute($stmt);
+    }
+
+    return $result;
+}
+
 function format_price($price) {
     $price = $price > 9999 ? number_format($price, 0, ',', ' ') : $price;
 
@@ -119,6 +130,33 @@ function handle_picture($form_data, $database) {
     return $form_data;
 }
 
+function insert_data($link, $table, $data) {
+    $result = false;
+
+    if ($link) {
+        $columns = '';
+        $data = [];
+
+        foreach ($data as $key => $value) {
+            $columns .= $key . ', ';
+            $placeholders .= '?, ';
+            $data[] = $value;
+        }
+
+        $columns = substr($columns, 0, -2);
+        $columns = substr($placeholders, 0, -2);
+        $sql = 'INSERT INTO ' . $users . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
+        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
+        $result = mysqli_stmt_execute($stmt);
+    }
+
+    if ($result) {
+        $result = mysqli_insert_id($link);
+    }
+
+    return $result;
+}
+
 function is_filled($fields, $required_fields) {
     $errors = [];
 
@@ -152,6 +190,18 @@ function post($key = null, $default_value = '') {
 
         return $array;
     }
+}
+
+function select_data($link, $sql, $data = []) {
+    $array = [];
+
+    if ($link) {
+        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
+        $result = mysqli_stmt_execute($stmt);
+        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    return $array;
 }
 
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
