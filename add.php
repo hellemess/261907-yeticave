@@ -2,6 +2,9 @@
 session_start();
 
 require_once 'functions.php';
+require_once 'init.php';
+
+check_connection($link);
 
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
@@ -61,10 +64,17 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = false;
     http_response_code(403);
 
+    $content = get_html_code(
+        'templates/error.php',
+        [
+            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
+        ]
+    );
+
     $data = [
         'title' => 'Yeti Cave — Доступ запрещен',
         'is_auth' => $is_auth,
-        'content' => '<div class="container"><h1>403</h1><p>Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.</p></div>'
+        'content' => $content
     ];
 }
 

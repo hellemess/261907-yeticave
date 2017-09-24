@@ -1,8 +1,10 @@
 <?php
 session_start();
 
-define('SECONDS_IN_MINUTE', 60);
-define('SECONDS_IN_HOUR', 3600);
+require_once 'functions.php';
+require_once 'init.php';
+
+check_connection($link);
 
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
@@ -31,8 +33,6 @@ $minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
 
 // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
 $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
-
-require_once 'functions.php';
 
 $content = get_html_code(
     'templates/index.php',

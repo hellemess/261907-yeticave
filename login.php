@@ -1,14 +1,17 @@
 <?php
 session_start();
 
+require_once 'functions.php';
+require_once 'init.php';
+
+check_connection($link);
+
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
 } else {
     $is_auth = false;
 }
-
-require_once 'functions.php';
 
 $fields = [
     'email' => '',
