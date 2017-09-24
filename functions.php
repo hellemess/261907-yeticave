@@ -3,6 +3,29 @@ define('SECONDS_IN_MINUTE', 60);
 define('SECONDS_IN_HOUR', 3600);
 define('SECONDS_IN_DAY', 86400);
 
+function check_connection($link) {
+    if (!$link) {
+        $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
+
+        $content = get_html_code(
+            'templates/error.php',
+            [
+                'error' => $error
+            ]
+        );
+
+        $html_code = get_html_code(
+            'templates/layout.php',
+            [
+                'title' => 'Yeti Cave — Ошибка подключения',
+                'content' => $content
+            ]
+        );
+
+        exit($html_code);
+    }
+}
+
 function convert_ts($ts) {
     $now = strtotime('now');
     $time_passed = $now - $ts;

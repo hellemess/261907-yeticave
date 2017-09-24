@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+require_once 'functions.php';
+require_once 'init.php';
+require_once 'lots.php';
+
+check_connection($link);
+
 // ставки пользователей, которыми надо заполнить таблицу
 $bets = [
     ['name' => 'Иван', 'price' => 11500, 'ts' => strtotime('-' . rand(1, 50) .' minute')],
@@ -19,9 +25,6 @@ if (isset($_SESSION['user']['name'])) {
         'is_auth' => false
     ];
 }
-
-require_once 'functions.php';
-require_once 'lots.php';
 
 if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     $lot = $lots[$_GET['id']];
@@ -90,8 +93,16 @@ if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     );
 } else {
     http_response_code(404);
+
+    $content = get_html_code(
+        'templates/error.php',
+        [
+            'error' => 'Лот не найден. Вернитесь на <a class="text-link" href="index.php">главную страницу</a> и выберите другой лот.'
+        ]
+    );
+
     $data['title'] = 'Yeti Cave — ' . 'Лот не найден';
-    $data['content'] = '<div class="container"><h1>404</h1><p>Лот не найден. Вернитесь на <a class="text-link" href="index.php">главную страницу</a> и выберите другой лот.</p></div>';
+    $data['content'] = $content;
 }
 
 $html_code = get_html_code(
