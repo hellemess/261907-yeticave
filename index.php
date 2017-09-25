@@ -23,7 +23,6 @@ $sql = 'SELECT l.id, picture, l.title, c.title, starting_price, expiration_date 
     'ORDER BY creation_date ASC';
 
 $lots = select_data($link, $sql);
-mysqli_close($link);
 
 $content = get_html_code(
     'templates/index.php',

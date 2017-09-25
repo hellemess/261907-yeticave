@@ -44,8 +44,6 @@ if (isset($lot) && !empty($lot)) {
 
     $bets = select_data($link, $sql, [$lot[0]]);
 
-    mysqli_close($link);
-
     if (!empty($bets)) {
         $lot[6] = $bets[0][1];
     }
@@ -100,7 +98,7 @@ if ($is_betting_available) {
             'lot' => $lot[0]
         ];
 
-        // $bet_id = insert_data($link, 'bets', $user_bet);
+        $bet_id = insert_data($link, 'bets', $user_bet);
 
         if (!$bet_id) {
             $data['content'] = get_html_code(
