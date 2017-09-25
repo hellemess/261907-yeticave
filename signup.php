@@ -32,7 +32,7 @@ if (!$is_auth) {
         $users = select_data($link, 'SELECT email FROM users');
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_email($form_data, $users);
-        $form_data = handle_picture($form_data, $users);
+        $form_data = handle_picture($form_data, ['user', $users]);
         $fields = $form_data['fields'];
         $errors = $form_data['errors'];
     }

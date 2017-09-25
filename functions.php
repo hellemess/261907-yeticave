@@ -156,14 +156,14 @@ function get_html_code($template, $data) {
 
 function handle_picture($form_data, $database) {
     if (!empty($_FILES['picture']['name'])) {
-        $file_name = 'lot-' . (count($database) + 1) . '.' . substr($_FILES['picture']['type'], 6);
+        $file_name = $database[0] . '-' . (count($database[1]) + 1) . '.' . substr($_FILES['picture']['type'], 6);
         $file_path = __DIR__ . '/img/';
         move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
     } else {
         $form_data['errors']['picture'] = 'Добавьте изображение.';
     }
 
-    if (empty($errors)) {
+    if (empty($form_data['errors'])) {
         $form_data['fields']['picture'] = 'img/' . $file_name;
     }
 
