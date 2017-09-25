@@ -3,6 +3,7 @@ session_start();
 
 require_once 'functions.php';
 require_once 'init.php';
+require_once 'nav.php';
 
 check_connection($link);
 
@@ -46,6 +47,7 @@ if (!empty($_POST) && empty($errors)) {
 $content = get_html_code(
     'templates/login.php',
     [
+        'nav' => $nav,
         'errors' => $errors,
         'fields' => $fields
     ]

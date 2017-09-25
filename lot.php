@@ -4,6 +4,7 @@ session_start();
 require_once 'functions.php';
 require_once 'init.php';
 require_once 'lots.php';
+require_once 'nav.php';
 
 check_connection($link);
 
@@ -33,13 +34,19 @@ if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     $is_betting_available = false;
 
     $content = [
+        'nav' => $nav,
         'lot' => $lot,
         'bets' => $bets
     ];
 
-    if ($data['is_auth'] && isset($_COOKIE['BETS']))  {
+    if ($data['is_auth'])  {
         $is_betting_available = true;
-        $user_bets = json_decode($_COOKIE['BETS'], true);
+
+        if (isset($_COOKIE['BETS'])) {
+            $user_bets = json_decode($_COOKIE['BETS'], true);
+        } else {
+            $user_bets = [];
+        }
 
         foreach ($user_bets as $bet) {
             if ($bet['id'] == $lot['id']) {
@@ -49,10 +56,6 @@ if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     }
 
     if ($is_betting_available) {
-        if (!isset($user_bets)) {
-            $user_bets = [];
-        }
-
         $fields = [
             'cost' => ''
         ];
@@ -97,6 +100,7 @@ if (isset($_GET['id']) && isset($lots[$_GET['id']])) {
     $content = get_html_code(
         'templates/error.php',
         [
+            'nav' => $nav,
             'error' => 'Лот не найден. Вернитесь на <a class="text-link" href="index.php">главную страницу</a> и выберите другой лот.'
         ]
     );

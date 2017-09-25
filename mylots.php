@@ -3,6 +3,7 @@ session_start();
 
 require_once 'functions.php';
 require_once 'init.php';
+require_once 'nav.php';
 
 check_connection($link);
 
@@ -18,6 +19,7 @@ if (isset($_SESSION['user']['name'])) {
     $content = get_html_code(
         'templates/mylots.php',
         [
+            'nav' => $nav,
             'user_bets' => array_reverse($user_bets)
         ]
     );
@@ -34,6 +36,7 @@ if (isset($_SESSION['user']['name'])) {
     $content = get_html_code(
         'templates/error.php',
         [
+            'nav' => $nav,
             'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут просматривать список сделанных ставок (и делать их). Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
         ]
     );
