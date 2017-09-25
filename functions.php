@@ -87,7 +87,7 @@ function execute_query($link, $sql, $data = []) {
     $result = false;
 
     if ($link) {
-        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
+        $stmt = db_get_prepare_stmt($link, $sql, $data);
         $result = mysqli_stmt_execute($stmt);
     }
 
@@ -135,23 +135,25 @@ function insert_data($link, $table, $data) {
 
     if ($link) {
         $columns = '';
-        $data = [];
+        $placeholders = '';
+        $values = [];
 
         foreach ($data as $key => $value) {
             $columns .= $key . ', ';
             $placeholders .= '?, ';
-            $data[] = $value;
+            $values[] = $value;
         }
 
         $columns = substr($columns, 0, -2);
-        $columns = substr($placeholders, 0, -2);
-        $sql = 'INSERT INTO ' . $users . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
-        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
-        $result = mysqli_stmt_execute($stmt);
-    }
-
-    if ($result) {
+        $placeholders = substr($placeholders, 0, -2);
+        $sql = 'INSERT INTO ' . $table . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
+        $stmt = db_get_prepare_stmt($link, $sql, $values);
+        mysqli_stmt_execute($stmt);
         $result = mysqli_insert_id($link);
+
+        if ($result === 0) {
+            $result = false;
+        }
     }
 
     return $result;
@@ -196,9 +198,13 @@ function select_data($link, $sql, $data = []) {
     $array = [];
 
     if ($link) {
-        $stmt = db_get_prepare_stmt($link, $sql, $data = []);
-        $result = mysqli_stmt_execute($stmt);
-        $array = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $stmt = db_get_prepare_stmt($link, $sql, $data);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+            $array[] = $row;
+        }
     }
 
     return $array;
