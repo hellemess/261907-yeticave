@@ -10,7 +10,8 @@ check_connection($link);
 if (isset($_SESSION['user']['name'])) {
     $data = [
         'is_auth' => true,
-        'user_name' => $_SESSION['user']['name']
+        'user_name' => $_SESSION['user']['name'],
+        'user_id' => $_SESSION['user']['id']
     ];
 } else {
     $data = [
@@ -22,39 +23,49 @@ $lot_not_found = true;
 $is_betting_available = false;
 
 if (isset($_GET['id'])) {
-    $sql = 'SELECT l.id, l.title, picture, c.title, description, expiration_date, starting_price, step FROM lots l ' .
+    $sql = 'SELECT l.id, l.title, picture, c.title, description, expiration_date, starting_price, step, seller FROM lots l ' .
         'JOIN categories c ' .
             'ON category = c.id ' .
         'WHERE l.id = ?';
 
     $lot = select_data($link, $sql, [$_GET['id']])[0];
+}
 
-    if (!empty($lot)) {
-        $lot_not_found = false;
+if (isset($lot) && !empty($lot)) {
+    $lot_not_found = false;
 
-        $data['title'] = 'Yeti Cave — ' . $lot[1];
+    $data['title'] = 'Yeti Cave — ' . $lot[1];
 
-        $sql = 'SELECT name, cost, betting_date FROM bets b ' .
-            'JOIN users u ' .
-                'ON buyer = u.id ' .
-            'WHERE lot = ? ' .
-            'ORDER BY betting_date DESC';
+    $sql = 'SELECT name, cost, betting_date FROM bets b ' .
+        'JOIN users u ' .
+            'ON buyer = u.id ' .
+        'WHERE lot = ? ' .
+        'ORDER BY betting_date DESC';
 
-        $bets = select_data($link, $sql, [$lot[0]]);
+    $bets = select_data($link, $sql, [$lot[0]]);
 
-        mysqli_close($link);
+    mysqli_close($link);
 
-        if (!empty($bets)) {
-            $lot[6] = $bets[0][1];
+    if (!empty($bets)) {
+        $lot[6] = $bets[0][1];
+    }
+
+    $content = [
+        'lot' => $lot,
+        'bets' => $bets
+    ];
+
+    if ($data['is_auth']) {
+        $is_betting_available = true;
+
+        foreach ($bets as $bet) {
+            if ($bet[0] == $data['user_name']) {
+                $is_betting_available = false;
+            }
         }
 
-        $content = [
-            'lot' => $lot,
-            'bets' => $bets
-        ];
-
-        if ($data['is_auth']) {
-            $is_betting_available = true;
+        if ($lot[8] == $data['user_id']) {
+            $is_betting_available = false;
         }
     }
 }
@@ -76,16 +87,28 @@ if ($is_betting_available) {
     }
 
     if (!empty($_POST) && empty($errors)) {
-        // $user_bets[] = [
-        //     'cost' => post('cost'),
-        //     'time' => strtotime('now'),
-        //     'id' => $_GET['id']
-        // ];
-        //
-        // $user_bets = json_encode($user_bets);
-        //
-        // setcookie('BETS', $user_bets);
-        // header('Location: /mylots.php');
+        $user_bet = [
+            'betting_date' => date_format(date_create('now'), 'Y-m-d H:i:s'),
+            'cost' => post('cost'),
+            'buyer' => $data['user_id'],
+            'lot' => $lot[0]
+        ];
+
+        $bet_id = insert_data($link, 'bets', $user_bet);
+
+        if (!$bet_id) {
+            $content = get_html_code(
+                'templates/error.php',
+                [
+                    'error' => 'Произошла ошибка подключения! Текст ошибки:
+                            <blockquote>
+                                <i>' . mysqli_connect_error() . '</i>
+                            </blockquote>'
+                ]
+            );
+        } else {
+            header('Location: /lot.php?id=' . $lot[0]);
+        }
     }
 
     $content['min'] = $min;
@@ -95,12 +118,16 @@ if ($is_betting_available) {
 
 if ($lot_not_found) {
     http_response_code(404);
+    $error_status = 404;
     $data['title'] = 'Yeti Cave — ' . 'Лот не найден';
 
     $data['content'] = get_html_code(
         'templates/error.php',
         [
-            'error' => 'Лот не найден. Вернитесь на <a class="text-link" href="index.php">главную страницу</a> и выберите другой лот.'
+            'error_status' => $error_status,
+            'error' => 'Лот не найден. Вернитесь на
+                    <a class="text-link" href="index.php">главную страницу</a>
+                и выберите другой лот.'
         ]
     );
 } else {

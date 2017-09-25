@@ -45,7 +45,10 @@ if (isset($_SESSION['user']['name'])) {
             $content = get_html_code(
                 'templates/error.php',
                 [
-                    'error' => 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>'
+                    'error' => 'Произошла ошибка подключения! Текст ошибки:
+                            <blockquote>
+                                <i>' . mysqli_connect_error() . '</i>
+                            </blockquote>'
                 ]
             );
         } else {
@@ -72,11 +75,15 @@ if (isset($_SESSION['user']['name'])) {
 } else {
     $is_auth = false;
     http_response_code(403);
+    $error_status = 403;
 
     $content = get_html_code(
         'templates/error.php',
         [
-            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
+            'error_status' => $error_status,
+            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста,
+                    <a class="text-link" href="login.php">войдите</a>
+                на сайт.'
         ]
     );
 

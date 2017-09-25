@@ -26,10 +26,10 @@ require_once 'functions.php';
                         Мин. ставка <span><?=format_price($min); ?> р</span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="/lot.php?id=<?=$lot['id']; ?>" method="post">
+                <form class="lot-item__form" action="/lot.php?id=<?=$lot[0]; ?>" method="post">
                     <p class="lot-item__form-item <?=!empty($errors) ? 'form__item--invalid' : ''; ?>">
                         <label for="cost">Ваша ставка</label>
-                        <input id="cost" type="number" name="cost" placeholder="<?=format_price($min); ?>" min="<?=$min; ?>" required>
+                        <input id="cost" type="number" name="cost" placeholder="<?=format_price($min); ?>" required>
                         <span class="form__error" style="position: absolute;"><?=$errors['cost']; ?></span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>

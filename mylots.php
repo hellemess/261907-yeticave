@@ -10,16 +10,22 @@ check_connection($link);
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
-    $user_bets = [];
+    $user_id = $_SESSION['user']['id'];
 
-    if (isset($_COOKIE['BETS'])) {
-        $user_bets = json_decode($_COOKIE['BETS'], true);
-    }
+    $sql = 'SELECT picture, l.id, l.title, c.title, expiration_date, cost, betting_date FROM bets b ' .
+        'JOIN lots l ' .
+            'ON lot = l.id ' .
+        'JOIN categories c ' .
+            'ON category = c.id ' .
+        'WHERE buyer = ? ' .
+        'ORDER BY betting_date DESC';
+
+    $user_bets = select_data($link, $sql, [$user_id]);
 
     $content = get_html_code(
         'templates/mylots.php',
         [
-            'user_bets' => array_reverse($user_bets)
+            'user_bets' => $user_bets
         ]
     );
 
@@ -31,11 +37,15 @@ if (isset($_SESSION['user']['name'])) {
 } else {
     $is_auth = false;
     http_response_code(403);
+    $error_status = 403;
 
     $content = get_html_code(
         'templates/error.php',
         [
-            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут просматривать список сделанных ставок (и делать их). Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
+            'error_status' => $error_status,
+            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут просматривать список сделанных ставок (и делать их). Пожалуйста,
+                    <a class="text-link" href="login.php">войдите</a>
+                на сайт.'
         ]
     );
 
