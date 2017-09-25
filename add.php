@@ -3,6 +3,7 @@ session_start();
 
 require_once 'functions.php';
 require_once 'init.php';
+require_once 'nav.php';
 
 check_connection($link);
 
@@ -39,6 +40,7 @@ if (isset($_SESSION['user']['name'])) {
         $content = get_html_code(
             'templates/lot.php',
             [
+                'nav' => $nav,
                 'lot' => $fields,
                 'bets' => []
             ]
@@ -47,6 +49,7 @@ if (isset($_SESSION['user']['name'])) {
         $content = get_html_code(
             'templates/add.php',
             [
+                'nav' => $nav,
                 'categories' => $categories,
                 'errors' => $errors,
                 'fields' => $fields
@@ -67,6 +70,7 @@ if (isset($_SESSION['user']['name'])) {
     $content = get_html_code(
         'templates/error.php',
         [
+            'nav' => $nav,
             'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
         ]
     );
@@ -84,4 +88,3 @@ $html_code = get_html_code(
 );
 
 print($html_code);
-?>

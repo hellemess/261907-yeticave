@@ -1,28 +1,8 @@
 <?php
 require_once 'functions.php';
+
+print($nav);
 ?>
-<nav class="nav">
-    <ul class="nav__list container">
-        <li class="nav__item">
-            <a href="">Доски и лыжи</a>
-        </li>
-        <li class="nav__item">
-            <a href="">Крепления</a>
-        </li>
-        <li class="nav__item">
-            <a href="">Ботинки</a>
-        </li>
-        <li class="nav__item">
-            <a href="">Одежда</a>
-        </li>
-        <li class="nav__item">
-            <a href="">Инструменты</a>
-        </li>
-        <li class="nav__item">
-            <a href="">Разное</a>
-        </li>
-    </ul>
-</nav>
 <section class="lot-item container">
     <h2><?=$lot['title']; ?></h2>
     <div class="lot-item__content">

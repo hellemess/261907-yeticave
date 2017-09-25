@@ -3,6 +3,8 @@ define('SECONDS_IN_MINUTE', 60);
 define('SECONDS_IN_HOUR', 3600);
 define('SECONDS_IN_DAY', 86400);
 
+require_once 'mysql_helper.php';
+
 function check_connection($link) {
     if (!$link) {
         $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
@@ -81,6 +83,17 @@ function convert_ts($ts) {
     return $time_passed;
 }
 
+function execute_query($link, $sql, $data = []) {
+    $result = false;
+
+    if ($link) {
+        $stmt = db_get_prepare_stmt($link, $sql, $data);
+        $result = mysqli_stmt_execute($stmt);
+    }
+
+    return $result;
+}
+
 function format_price($price) {
     $price = $price > 9999 ? number_format($price, 0, ',', ' ') : $price;
 
@@ -115,6 +128,35 @@ function handle_picture($form_data, $database) {
     }
 
     return $form_data;
+}
+
+function insert_data($link, $table, $data) {
+    $result = false;
+
+    if ($link) {
+        $columns = '';
+        $placeholders = '';
+        $values = [];
+
+        foreach ($data as $key => $value) {
+            $columns .= $key . ', ';
+            $placeholders .= '?, ';
+            $values[] = $value;
+        }
+
+        $columns = substr($columns, 0, -2);
+        $placeholders = substr($placeholders, 0, -2);
+        $sql = 'INSERT INTO ' . $table . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
+        $stmt = db_get_prepare_stmt($link, $sql, $values);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_insert_id($link);
+
+        if ($result === 0) {
+            $result = false;
+        }
+    }
+
+    return $result;
 }
 
 function is_filled($fields, $required_fields) {
@@ -152,6 +194,22 @@ function post($key = null, $default_value = '') {
     }
 }
 
+function select_data($link, $sql, $data = []) {
+    $array = [];
+
+    if ($link) {
+        $stmt = db_get_prepare_stmt($link, $sql, $data);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+            $array[] = $row;
+        }
+    }
+
+    return $array;
+}
+
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
     foreach ($form_data['fields'] as $key => $value) {
         if (in_array($key, $numeric_fields)) {
@@ -165,5 +223,3 @@ function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
 
     return $form_data;
 }
-
-?>
