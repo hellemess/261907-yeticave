@@ -160,7 +160,7 @@ function handle_picture($form_data, $database) {
         $file_path = __DIR__ . '/img/';
         move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
     } else {
-        $form_data['errors']['picture'] = 'Добавьте снимок лота.';
+        $form_data['errors']['picture'] = 'Добавьте изображение.';
     }
 
     if (empty($errors)) {
@@ -252,6 +252,22 @@ function select_data($link, $sql, $data = []) {
     mysqli_stmt_close($stmt);
 
     return $array;
+}
+
+function validate_email($form_data, $existing_emails) {
+    $result = filter_var($form_data['fields']['email'], FILTER_VALIDATE_EMAIL);
+
+    if (!$result) {
+        $form_data['errors']['email'] = 'Введите корректный адрес электронной почты.';
+    }
+
+    foreach ($existing_emails as $email) {
+        if ($email[0] == $form_data['fields']['email']) {
+            $form_data['errors']['email'] = 'Такой адрес уже зарегистрирован.';
+        }
+    }
+
+    return $form_data;
 }
 
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
