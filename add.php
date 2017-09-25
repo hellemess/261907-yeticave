@@ -29,7 +29,7 @@ if (isset($_SESSION['user']['name'])) {
     if (!empty($_POST)) {
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_numeric_data($form_data, $numeric_fields);
-        $form_data = handle_picture($form_data, ['lot', $lots]);
+        $form_data = handle_picture($form_data, ['lot', $lots], true);
         $fields = $form_data['fields'];
         $errors = $form_data['errors'];
     }

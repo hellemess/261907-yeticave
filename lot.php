@@ -67,6 +67,8 @@ if (isset($lot) && !empty($lot)) {
         if ($lot[8] == $data['user_id']) {
             $is_betting_available = false;
         }
+
+        $content['is_betting_available'] = $is_betting_available;
     }
 }
 
@@ -86,6 +88,10 @@ if ($is_betting_available) {
         $errors = $form_data['errors'];
     }
 
+    $content['min'] = $min;
+    $content['fields'] = $fields;
+    $content['errors'] = $errors;
+
     if (!empty($_POST) && empty($errors)) {
         $user_bet = [
             'betting_date' => date_format(date_create('now'), 'Y-m-d H:i:s'),
@@ -94,10 +100,10 @@ if ($is_betting_available) {
             'lot' => $lot[0]
         ];
 
-        $bet_id = insert_data($link, 'bets', $user_bet);
+        // $bet_id = insert_data($link, 'bets', $user_bet);
 
         if (!$bet_id) {
-            $content = get_html_code(
+            $data['content'] = get_html_code(
                 'templates/error.php',
                 [
                     'error' => 'Произошла ошибка подключения! Текст ошибки:
@@ -110,10 +116,6 @@ if ($is_betting_available) {
             header('Location: /lot.php?id=' . $lot[0]);
         }
     }
-
-    $content['min'] = $min;
-    $content['fields'] = $fields;
-    $content['errors'] = $errors;
 }
 
 if ($lot_not_found) {
@@ -131,31 +133,11 @@ if ($lot_not_found) {
         ]
     );
 } else {
-    $content['is_betting_available'] = $is_betting_available;
-
     $data['content'] = get_html_code(
         'templates/lot.php',
         $content
     );
 }
-
-    // if ($data['is_auth'])  {
-    //     $is_betting_available = true;
-    //
-    //     if (isset($_COOKIE['BETS'])) {
-    //         $user_bets = json_decode($_COOKIE['BETS'], true);
-    //     } else {
-    //         $user_bets = [];
-    //     }
-    //
-    //     foreach ($user_bets as $bet) {
-    //         if ($bet['id'] == $lot['id']) {
-    //
-    //         }
-    //     }
-    // }
-
-
 
 $data['nav'] = $nav;
 

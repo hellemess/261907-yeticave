@@ -154,13 +154,15 @@ function get_html_code($template, $data) {
     return $html_code;
 }
 
-function handle_picture($form_data, $database) {
+function handle_picture($form_data, $database, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
         $file_name = $database[0] . '-' . (count($database[1]) + 1) . '.' . substr($_FILES['picture']['type'], 6);
         $file_path = __DIR__ . '/img/';
         move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
     } else {
-        $form_data['errors']['picture'] = 'Добавьте изображение.';
+        if ($required) {
+            $form_data['errors']['picture'] = 'Добавьте изображение.';
+        }
     }
 
     if (empty($form_data['errors'])) {

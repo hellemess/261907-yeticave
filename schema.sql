@@ -16,7 +16,7 @@ CREATE TABLE users (
   registration_date DATETIME,
   name              CHAR (100) NOT NULL,
   password          CHAR (60) NOT NULL,
-  avatar            CHAR (20),
+  picture           CHAR (20),
   contacts          TEXT
 );
 

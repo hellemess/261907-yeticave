@@ -37,6 +37,27 @@ if (!$is_auth) {
         $errors = $form_data['errors'];
     }
 
+    if (!empty($_POST) && empty($errors)) {
+        $fields['password'] = password_hash($fields['password'], PASSWORD_DEFAULT);
+        $fields['registration_date'] = date_format(date_create('now'), 'Y-m-d H:i:s');
+
+        $user_id = insert_data($link, 'users', $fields);
+
+        if (!$user_id) {
+            $content = get_html_code(
+                'templates/error.php',
+                [
+                    'error' => 'Произошла ошибка подключения! Текст ошибки:
+                            <blockquote>
+                                <i>' . mysqli_connect_error() . '</i>
+                            </blockquote>'
+                ]
+            );
+        } else {
+            header('Location: /login.php');
+        }
+    }
+
     $content = get_html_code(
         'templates/signup.php',
         [
