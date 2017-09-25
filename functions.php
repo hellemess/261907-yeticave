@@ -5,6 +5,44 @@ define('SECONDS_IN_DAY', 86400);
 
 require_once 'mysql_helper.php';
 
+function calculate_remaining_time($date) {
+    // устанавливаем часовой пояс в Московское время
+    date_default_timezone_set('Europe/Moscow');
+
+    // временная метка для полночи следующего дня
+    $ts = strtotime($date);
+
+    // временная метка для настоящего времени
+    $now = strtotime('now');
+
+    $days_remaining = floor(($ts - $now) / SECONDS_IN_DAY);
+
+    if ($days_remaining > 1) {
+        switch ($time_passed % 10) {
+            case 1:
+                $lot_time_remaining = $days_remaining . ' день';
+                break;
+            case 2:
+            case 3:
+            case 4:
+                $lot_time_remaining = $days_remaining . ' дня';
+                break;
+            default:
+                $lot_time_remaining = $days_remaining . ' дней';
+        }
+    } else {
+        $hours_remaining = floor(($ts - $now) / SECONDS_IN_HOUR);
+        $hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
+        $minutes_remaining = floor(($ts - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE);
+        $minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
+
+        // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
+        $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
+    }
+
+    return $lot_time_remaining;
+}
+
 function check_connection($link) {
     if (!$link) {
         $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
@@ -91,6 +129,8 @@ function execute_query($link, $sql, $data = []) {
         $result = mysqli_stmt_execute($stmt);
     }
 
+    mysqli_stmt_close($stmt);
+
     return $result;
 }
 
@@ -156,6 +196,8 @@ function insert_data($link, $table, $data) {
         }
     }
 
+    mysqli_stmt_close($stmt);
+
     return $result;
 }
 
@@ -206,6 +248,8 @@ function select_data($link, $sql, $data = []) {
             $array[] = $row;
         }
     }
+
+    mysqli_stmt_close($stmt);
 
     return $array;
 }

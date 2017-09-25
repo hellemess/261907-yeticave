@@ -27,7 +27,7 @@ if (!empty($_POST)) {
     $errors = $form_data['errors'];
 }
 
-require_once 'userdata.php';
+$users = select_data($link, 'SELECT id, email, name, password FROM users');
 
 if (!empty($_POST) && empty($errors)) {
     foreach ($users as $user) {
@@ -35,8 +35,9 @@ if (!empty($_POST) && empty($errors)) {
         $email = $user_data['email'];
         $password = $user_data['password'];
 
-        if ($email = $user['email'] && password_verify($password, $user['password'])) {
-            $_SESSION['user']['name'] = $user['name'];
+        if ($email = $user[1] && password_verify($password, $user[3])) {
+            $_SESSION['user']['name'] = $user[2];
+            $_SESSION['user']['id'] = $user[0];
             header('Location: index.php');
         } else {
             $errors['password'] = 'Вы ввели неверный пароль';
@@ -47,9 +48,9 @@ if (!empty($_POST) && empty($errors)) {
 $content = get_html_code(
     'templates/login.php',
     [
-        'nav' => $nav,
         'errors' => $errors,
-        'fields' => $fields
+        'fields' => $fields,
+        'users' => $users
     ]
 );
 
@@ -59,6 +60,7 @@ $html_code = get_html_code(
         'title' => 'Yeti Cave — Войти',
         'is_auth' => $is_auth,
         'user_name' => $user_name,
+        'nav' => $nav,
         'content' => $content
     ]
 );

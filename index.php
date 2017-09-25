@@ -3,6 +3,7 @@ session_start();
 
 require_once 'functions.php';
 require_once 'init.php';
+require_once 'nav.php';
 
 check_connection($link);
 
@@ -13,26 +14,16 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = false;
 }
 
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+$categories = select_data($link, 'SELECT * FROM categories ORDER BY id ASC');
 
-require_once 'lots.php';
+$sql = 'SELECT l.id, picture, l.title, c.title, starting_price, expiration_date FROM lots l ' .
+    'JOIN categories c ' .
+        'ON category = c.id ' .
+    'WHERE expiration_date > NOW() ' .
+    'ORDER BY creation_date ASC';
 
-// устанавливаем часовой пояс в Московское время
-date_default_timezone_set('Europe/Moscow');
-
-// временная метка для полночи следующего дня
-$tomorrow = strtotime('tomorrow midnight');
-
-// временная метка для настоящего времени
-$now = strtotime('now');
-
-$hours_remaining = floor(($tomorrow - $now) / SECONDS_IN_HOUR);
-$hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
-$minutes_remaining = floor(($tomorrow - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE);
-$minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
-
-// записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
-$lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
+$lots = select_data($link, $sql);
+mysqli_close($link);
 
 $content = get_html_code(
     'templates/index.php',
@@ -49,6 +40,7 @@ $html_code = get_html_code(
         'title' => 'Yeti Cave — Главная',
         'is_auth' => $is_auth,
         'user_name' => $user_name,
+        'nav' => $nav,
         'content' => $content
     ]
 );

@@ -10,7 +10,9 @@ check_connection($link);
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
-    $categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+    $user_id = $_SESSION['user']['id'];
+    $categories = select_data($link, 'SELECT id, title FROM categories ORDER BY id ASC');
+    $lots = select_data($link, 'SELECT id FROM lots');
 
     $fields = [
         'title' => '',
@@ -24,8 +26,6 @@ if (isset($_SESSION['user']['name'])) {
     $required_fields = ['title', 'category', 'description', 'expiration_date'];
     $numeric_fields = ['starting_price', 'step'];
 
-    require_once 'lots.php';
-
     if (!empty($_POST)) {
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_numeric_data($form_data, $numeric_fields);
@@ -35,21 +35,26 @@ if (isset($_SESSION['user']['name'])) {
     }
 
     if (!empty($_POST) && empty($errors)) {
-        $fields['current_price'] = $fields['starting_price'];
+        $fields['expiration_date'] = date_format(date_create($fields['expiration_date']), 'Y-m-d H:i:s');
+        $fields['creation_date'] = date_format(date_create('now'), 'Y-m-d H:i:s');
+        $fields['seller'] = $user_id;
 
-        $content = get_html_code(
-            'templates/lot.php',
-            [
-                'nav' => $nav,
-                'lot' => $fields,
-                'bets' => []
-            ]
-        );
+        $lot_id = insert_data($link, 'lots', $fields);
+
+        if (!$lot_id) {
+            $content = get_html_code(
+                'templates/error.php',
+                [
+                    'error' => 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>'
+                ]
+            );
+        } else {
+            header('Location: /lot.php?id=' . $lot_id);
+        }
     } else {
         $content = get_html_code(
             'templates/add.php',
             [
-                'nav' => $nav,
                 'categories' => $categories,
                 'errors' => $errors,
                 'fields' => $fields
@@ -61,6 +66,7 @@ if (isset($_SESSION['user']['name'])) {
         'title' => 'Yeti Cave — Добавление лота',
         'is_auth' => $is_auth,
         'user_name' => $user_name,
+        'nav' => $nav,
         'content' => $content
     ];
 } else {
@@ -70,7 +76,6 @@ if (isset($_SESSION['user']['name'])) {
     $content = get_html_code(
         'templates/error.php',
         [
-            'nav' => $nav,
             'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут добавлять лоты. Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
         ]
     );
@@ -78,6 +83,7 @@ if (isset($_SESSION['user']['name'])) {
     $data = [
         'title' => 'Yeti Cave — Доступ запрещен',
         'is_auth' => $is_auth,
+        'nav' => $nav,
         'content' => $content
     ];
 }

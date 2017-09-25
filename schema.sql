@@ -6,7 +6,8 @@ USE yeticave;
 
 CREATE TABLE categories (
   id    INT (10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  title CHAR (15) NOT NULL
+  title CHAR (15) NOT NULL,
+  link  CHAR (15) NOT NULL
 );
 
 CREATE TABLE users (

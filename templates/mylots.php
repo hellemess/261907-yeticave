@@ -1,8 +1,5 @@
 <?php
-require_once 'lots.php';
 require_once 'functions.php';
-
-print($nav);
 ?>
 <section class="rates container">
 <h2>Мои ставки</h2>
