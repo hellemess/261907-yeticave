@@ -1,6 +1,13 @@
 {
-    "name": "yeticave",
-    "description": "Личный проект «YetiCave» от HTML Academy",
-    "type": "project",
-    "require": {}
+    "name": "hellemess/localhost",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Elena Esina",
+            "email": "hellemess@yandex.ru"
+        }
+    ],
+    "require": {
+        "respect/validation": "^1.1"
+    }
 }
