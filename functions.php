@@ -183,19 +183,20 @@ function insert_data($link, $table, $data) {
     $result = false;
 
     if ($link) {
-        $columns = '';
-        $placeholders = '';
-        $values = [];
+        $keys = array_keys($data);
+        $columns = implode(', ', $keys);
+        $placeholders = array_pad([], count($keys), '?');
+        $placeholders = implode(', ', $placeholders);
+        $values = array_values($data);
 
-        foreach ($data as $key => $value) {
-            $columns .= $key . ', ';
-            $placeholders .= '?, ';
-            $values[] = $value;
-        }
+        $sql = 'INSERT INTO '
+            . $table
+            . ' ('
+                . $columns
+            . ') VALUES ('
+                . $placeholders
+            . ')';
 
-        $columns = substr($columns, 0, -2);
-        $placeholders = substr($placeholders, 0, -2);
-        $sql = 'INSERT INTO ' . $table . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
         $stmt = db_get_prepare_stmt($link, $sql, $values);
         mysqli_stmt_execute($stmt);
         $result = mysqli_insert_id($link);
