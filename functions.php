@@ -202,7 +202,7 @@ function handle_picture($form_data, $table, $required = false) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_name = $table['code'] . '-' . ($table['number'] + 1) . '.' . substr($_FILES['picture']['type'], 6);
         $file_type = finfo_file($finfo, $_FILES['picture']['tmp_name']);
-        $allowed_types = ['image/jpg', 'image/jpeg', 'image/png']
+        $allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
 
         if (!in_array($file_type, $allowed_types)) {
             $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: GIF, JPG, JPEG или PNG.';
