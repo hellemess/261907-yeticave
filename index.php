@@ -42,7 +42,7 @@ $content = get_html_code(
     'templates/index.php',
     [
         'categories' => $categories,
-        'lots' => $lots
+        'lots' => $lots,
         'pagination' => $pagination
     ]
 );

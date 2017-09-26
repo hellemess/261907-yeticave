@@ -21,6 +21,7 @@ if (isset($_SESSION['user']['name'])) {
     );
 
     $data = [
+        'title' => 'Yeti Cave — Мои лоты',
         'is_auth' => $is_auth,
         'user_name' => $user_name,
         'content' => $content
