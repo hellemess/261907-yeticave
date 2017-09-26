@@ -35,9 +35,9 @@ if (!empty($_POST) && empty($errors)) {
         $email = $user_data['email'];
         $password = $user_data['password'];
 
-        if ($email = $user[1] && password_verify($password, $user[3])) {
-            $_SESSION['user']['name'] = $user[2];
-            $_SESSION['user']['id'] = $user[0];
+        if ($email = $user['email'] && password_verify($password, $user['password'])) {
+            $_SESSION['user']['name'] = $user['name'];
+            $_SESSION['user']['id'] = $user['id'];
             header('Location: index.php');
         } else {
             $errors['password'] = 'Вы ввели неверный пароль';

@@ -154,9 +154,9 @@ function get_html_code($template, $data) {
     return $html_code;
 }
 
-function handle_picture($form_data, $database, $required = false) {
+function handle_picture($form_data, $table, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
-        $file_name = $database[0] . '-' . (count($database[1]) + 1) . '.' . substr($_FILES['picture']['type'], 6);
+        $file_name = $table['code'] . '-' . (count($table['table']) + 1) . '.' . substr($_FILES['picture']['type'], 6);
         $file_path = __DIR__ . '/img/';
         move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
     } else {
@@ -246,7 +246,7 @@ function select_data($link, $sql, $data = []) {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             $array[] = $row;
         }
     }
@@ -264,7 +264,7 @@ function validate_email($form_data, $existing_emails) {
     }
 
     foreach ($existing_emails as $email) {
-        if ($email[0] == $form_data['fields']['email']) {
+        if ($email['email'] == $form_data['fields']['email']) {
             $form_data['errors']['email'] = 'Такой адрес уже зарегистрирован.';
         }
     }

@@ -11,7 +11,7 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
     $user_id = $_SESSION['user']['id'];
-    $categories = select_data($link, 'SELECT id, title FROM categories ORDER BY id ASC');
+    $categories = select_data($link, 'SELECT id, category FROM categories ORDER BY id ASC');
     $lots = select_data($link, 'SELECT id FROM lots');
 
     $fields = [
@@ -29,7 +29,16 @@ if (isset($_SESSION['user']['name'])) {
     if (!empty($_POST)) {
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_numeric_data($form_data, $numeric_fields);
-        $form_data = handle_picture($form_data, ['lot', $lots], true);
+
+        $form_data = handle_picture(
+            $form_data,
+            [
+                'code' => 'lot',
+                'table' => $lots
+            ],
+            true
+        );
+
         $fields = $form_data['fields'];
         $errors = $form_data['errors'];
     }

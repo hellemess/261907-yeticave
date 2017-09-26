@@ -9,21 +9,21 @@ require_once 'functions.php';
   <tr class="rates__item">
     <td class="rates__info">
       <div class="rates__img">
-        <img src="<?=$bet[0]; ?>" width="54" height="40" alt="<?=$bet[2]; ?>">
+        <img src="<?=$bet['picture']; ?>" width="54" height="40" alt="<?=$bet['title']; ?>">
       </div>
-      <h3 class="rates__title"><a href="lot.php?id=<?=$bet[1]; ?>"><?=$bet[2]; ?></a></h3>
+      <h3 class="rates__title"><a href="lot.php?id=<?=$bet['id']; ?>"><?=$bet['title']; ?></a></h3>
     </td>
     <td class="rates__category">
-      <?=$bet[3]; ?>
+      <?=$bet['category']; ?>
     </td>
     <td class="rates__timer">
-      <div class="timer timer--finishing"><?=calculate_remaining_time($bet[4]); ?></div>
+      <div class="timer timer--finishing"><?=calculate_remaining_time($bet['expiration_date']); ?></div>
     </td>
     <td class="rates__price">
-      <?=$bet[5]; ?>
+      <?=$bet['cost']; ?>
     </td>
     <td class="rates__time">
-      <?=convert_ts(strtotime($bet[6])); ?>
+      <?=convert_ts(strtotime($bet['betting_date'])); ?>
     </td>
   </tr>
   <?php endforeach; ?>

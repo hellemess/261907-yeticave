@@ -23,9 +23,9 @@ $lot_not_found = true;
 $is_betting_available = false;
 
 if (isset($_GET['id'])) {
-    $sql = 'SELECT l.id, l.title, picture, c.title, description, expiration_date, starting_price, step, seller FROM lots l ' .
+    $sql = 'SELECT l.id, title, picture, c.category, description, expiration_date, starting_price, step, seller FROM lots l ' .
         'JOIN categories c ' .
-            'ON category = c.id ' .
+            'ON l.category = c.id ' .
         'WHERE l.id = ?';
 
     $lot = select_data($link, $sql, [$_GET['id']])[0];
@@ -34,7 +34,7 @@ if (isset($_GET['id'])) {
 if (isset($lot) && !empty($lot)) {
     $lot_not_found = false;
 
-    $data['title'] = 'Yeti Cave — ' . $lot[1];
+    $data['title'] = 'Yeti Cave — ' . $lot['title'];
 
     $sql = 'SELECT name, cost, betting_date FROM bets b ' .
         'JOIN users u ' .
@@ -42,10 +42,10 @@ if (isset($lot) && !empty($lot)) {
         'WHERE lot = ? ' .
         'ORDER BY betting_date DESC';
 
-    $bets = select_data($link, $sql, [$lot[0]]);
+    $bets = select_data($link, $sql, [$lot['id']]);
 
     if (!empty($bets)) {
-        $lot[6] = $bets[0][1];
+        $lot['starting_price'] = $bets[0]['cost'];
     }
 
     $content = [
@@ -57,12 +57,12 @@ if (isset($lot) && !empty($lot)) {
         $is_betting_available = true;
 
         foreach ($bets as $bet) {
-            if ($bet[0] == $data['user_name']) {
+            if ($bet['name'] == $data['user_name']) {
                 $is_betting_available = false;
             }
         }
 
-        if ($lot[8] == $data['user_id']) {
+        if ($lot['seller'] == $data['user_id']) {
             $is_betting_available = false;
         }
 
@@ -77,7 +77,7 @@ if ($is_betting_available) {
 
     $required_fields = ['cost'];
     $numeric_fields = ['cost'];
-    $min = $lot[6] + $lot[7];
+    $min = $lot['starting_price'] + $lot['step'];
 
     if (!empty($_POST)) {
         $form_data = is_filled($fields, $required_fields);
@@ -95,7 +95,7 @@ if ($is_betting_available) {
             'betting_date' => date_format(date_create('now'), 'Y-m-d H:i:s'),
             'cost' => post('cost'),
             'buyer' => $data['user_id'],
-            'lot' => $lot[0]
+            'lot' => $lot['id']
         ];
 
         $bet_id = insert_data($link, 'bets', $user_bet);
@@ -111,7 +111,7 @@ if ($is_betting_available) {
                 ]
             );
         } else {
-            header('Location: /lot.php?id=' . $lot[0]);
+            header('Location: /lot.php?id=' . $lot['id']);
         }
     }
 }

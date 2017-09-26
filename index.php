@@ -16,9 +16,9 @@ if (isset($_SESSION['user']['name'])) {
 
 $categories = select_data($link, 'SELECT * FROM categories ORDER BY id ASC');
 
-$sql = 'SELECT l.id, picture, l.title, c.title, starting_price, expiration_date FROM lots l ' .
+$sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l ' .
     'JOIN categories c ' .
-        'ON category = c.id ' .
+        'ON l.category = c.id ' .
     'WHERE expiration_date > NOW() ' .
     'ORDER BY creation_date ASC';
 
