@@ -327,21 +327,16 @@ function select_data($link, $sql, $data = []) {
 
 function validate_date($form_data) {
     $is_date_format_correct = false;
-    $is_date_correct = false;
     $date = $form_data['fields']['expiration_date'];
     $date = explode('.', $date);
 
     if (count($date) === 3) {
-        list($date[0], $date[1]) = array($date[1], $date[0]);
-        $func = 'checkdate';
-        $is_date_format_correct = $func(...$date);
+        $is_date_format_correct = checkdate($date[1], $date[0], $date[2]);
     }
 
     if (!$is_date_format_correct) {
         $form_data['errors']['expiration_date'] = 'Введите дату в формате ДД.ММ.ГГГГ';
-    }
-
-    if (empty($form_data['errors'])) {
+    } else {
         $date = strtotime($form_data['fields']['expiration_date']);
         $now = strtotime('now');
 
