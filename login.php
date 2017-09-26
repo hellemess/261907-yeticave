@@ -32,12 +32,14 @@ if (!empty($_POST) && empty($errors)) {
     $email = $user_data['email'];
     $password = $user_data['password'];
 
-    $sql = 'SELECT email FROM users '
+    $sql = 'SELECT id, email, name, password FROM users '
         . 'WHERE email = ?';
 
-    $emails_matched = select_data($link, $sql, [$email]);
+    $matching_user = select_data($link, $sql, [$email]);
 
-    if (!empty($emails_matched)) {
+    if (!empty($matching_user)) {
+        $user = $matching_user[0];
+
         if (password_verify($password, $user['password'])) {
             $_SESSION['user']['name'] = $user['name'];
             $_SESSION['user']['id'] = $user['id'];
