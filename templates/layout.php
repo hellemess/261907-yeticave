@@ -11,7 +11,7 @@
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>
-        <a class="main-header__logo" <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? '' : 'href="index.php"'; ?>>
+        <a class="main-header__logo" <?php if (!strpos($_SERVER['REQUEST_URI'], 'index') && $_SERVER['REQUEST_URI'] !== '/'): ?>href="index.php"<?php endif; ?>>
             <img src="img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
         <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru">
@@ -44,8 +44,10 @@
     </div>
 </header>
 
-<main <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? 'class="container"' : ''; ?>>
-    <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? '' : $nav; ?>
+<main <?php if (strpos($_SERVER['REQUEST_URI'], 'index') || $_SERVER['REQUEST_URI'] === '/'): ?>class="container"<?php endif; ?>>
+    <?php if (!strpos($_SERVER['REQUEST_URI'], 'index') && $_SERVER['REQUEST_URI'] !== '/'): ?>
+    <?=$nav; ?>
+    <?php endif; ?>
     <?=$content; ?>
 </main>
 

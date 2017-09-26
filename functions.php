@@ -184,20 +184,37 @@ function get_lot_by_id($link, $id) {
     return $lot;
 }
 
-function get_open_lots($link) {
-    $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l ' .
-        'JOIN categories c ' .
-            'ON l.category = c.id ' .
-        'WHERE expiration_date > NOW() ' .
-        'ORDER BY creation_date ASC';
+function get_open_lots_for_page($link, $lots_per_page, $current_page) {
+    $offset = ($current_page - 1) * $lots_per_page;
 
-    $open_lots = select_data($link, $sql);
+    $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l '
+        . 'JOIN categories c '
+            . 'ON l.category = c.id '
+        . 'WHERE expiration_date > NOW() '
+        . 'ORDER BY creation_date ASC '
+        . 'LIMIT ? '
+        . 'OFFSET ?';
+
+    $open_lots = select_data($link, $sql, [$lots_per_page, $offset]);
 
     return $open_lots;
 }
 
-function handle_picture($form_data, $table, $required = false) {
+function get_user_bets($link, $user) {
+    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
+        'JOIN lots l ' .
+            'ON lot = l.id ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE buyer = ? ' .
+        'ORDER BY betting_date DESC';
 
+    $user_bets = select_data($link, $sql, [$user]);
+
+    return $user_bets;
+}
+
+function handle_picture($form_data, $table, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_name = $table['code'] . '-' . ($table['number'] + 1) . '.' . substr($_FILES['picture']['type'], 6);
@@ -308,18 +325,34 @@ function select_data($link, $sql, $data = []) {
     return $array;
 }
 
-function get_user_bets($link, $user) {
-    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
-        'JOIN lots l ' .
-            'ON lot = l.id ' .
-        'JOIN categories c ' .
-            'ON l.category = c.id ' .
-        'WHERE buyer = ? ' .
-        'ORDER BY betting_date DESC';
+function validate_date($form_data) {
+    $is_date_format_correct = false;
+    $is_date_correct = false;
+    $date = $form_data['fields']['expiration_date'];
+    $date = explode('.', $date);
 
-    $user_bets = select_data($link, $sql, [$user]);
+    if (count($date) === 3) {
+        list($date[0], $date[1]) = array($date[1], $date[0]);
+        $func = 'checkdate';
+        $is_date_format_correct = $func(...$date);
+    }
 
-    return $user_bets;
+    if (!$is_date_format_correct) {
+        $form_data['errors']['expiration_date'] = 'Введите дату в формате ДД.ММ.ГГГГ';
+    }
+
+    if (empty($form_data['errors'])) {
+        $date = strtotime($form_data['fields']['expiration_date']);
+        $now = strtotime('now');
+
+        if ($date - $now < 0) {
+            $form_data['errors']['expiration_date'] = 'Пожалуйста, выберите дату в будущем.';
+        } elseif (($date - $now) / SECONDS_IN_DAY < 1) {
+            $form_data['errors']['expiration_date'] = 'Пожалуйста, дайте покупателям больше времени.';
+        }
+    }
+
+    return $form_data;
 }
 
 function validate_email($link, $form_data) {
@@ -344,8 +377,8 @@ function validate_email($link, $form_data) {
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
     foreach ($form_data['fields'] as $key => $value) {
         if (in_array($key, $numeric_fields)) {
-            if (!is_numeric($value)) {
-                $form_data['errors'][$key] = 'Введите число.';
+            if (!ctype_digit($value)) {
+                $form_data['errors'][$key] = 'Введите целое число.';
             } elseif ($value < $min) {
                 $form_data['errors'][$key] = 'Введите число больше ' . format_price($min);
             }

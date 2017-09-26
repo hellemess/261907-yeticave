@@ -30,6 +30,7 @@ if (isset($_SESSION['user']['name'])) {
         $lots_count = select_data($link, 'SELECT COUNT(*) as count FROM lots')[0]['count'];
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_numeric_data($form_data, $numeric_fields);
+        $form_data = validate_date($form_data);
 
         $form_data = handle_picture(
             $form_data,
