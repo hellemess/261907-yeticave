@@ -11,7 +11,7 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
     $user_id = $_SESSION['user']['id'];
-    $categories = select_data($link, 'SELECT id, category FROM categories ORDER BY id ASC');
+    $categories = get_categories($link);
     $lots = select_data($link, 'SELECT id FROM lots');
 
     $fields = [

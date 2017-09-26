@@ -23,26 +23,13 @@ $lot_not_found = true;
 $is_betting_available = false;
 
 if (isset($_GET['id'])) {
-    $sql = 'SELECT l.id, title, picture, c.category, description, expiration_date, starting_price, step, seller FROM lots l ' .
-        'JOIN categories c ' .
-            'ON l.category = c.id ' .
-        'WHERE l.id = ?';
-
-    $lot = select_data($link, $sql, [$_GET['id']])[0];
+    $lot = get_lot_by_id($link, $_GET['id']);
 }
 
 if (isset($lot) && !empty($lot)) {
     $lot_not_found = false;
-
     $data['title'] = 'Yeti Cave — ' . $lot['title'];
-
-    $sql = 'SELECT name, cost, betting_date FROM bets b ' .
-        'JOIN users u ' .
-            'ON buyer = u.id ' .
-        'WHERE lot = ? ' .
-        'ORDER BY betting_date DESC';
-
-    $bets = select_data($link, $sql, [$lot['id']]);
+    $bets = get_bets_by_lot($link, $lot['id']);
 
     if (!empty($bets)) {
         $lot['starting_price'] = $bets[0]['cost'];

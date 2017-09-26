@@ -2,7 +2,7 @@
 require_once 'functions.php';
 require_once 'init.php';
 
-$categories = select_data($link, 'SELECT id, category FROM categories ORDER BY id ASC');
+$categories = get_categories($link);
 
 $nav = get_html_code(
     'templates/nav.php',

@@ -11,16 +11,7 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
     $user_id = $_SESSION['user']['id'];
-
-    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
-        'JOIN lots l ' .
-            'ON lot = l.id ' .
-        'JOIN categories c ' .
-            'ON l.category = c.id ' .
-        'WHERE buyer = ? ' .
-        'ORDER BY betting_date DESC';
-
-    $user_bets = select_data($link, $sql, [$user_id]);
+    $user_bets = get_user_bets($link, $user_id);
 
     $content = get_html_code(
         'templates/mylots.php',

@@ -14,15 +14,8 @@ if (isset($_SESSION['user']['name'])) {
     $is_auth = false;
 }
 
-$categories = select_data($link, 'SELECT * FROM categories ORDER BY id ASC');
-
-$sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l ' .
-    'JOIN categories c ' .
-        'ON l.category = c.id ' .
-    'WHERE expiration_date > NOW() ' .
-    'ORDER BY creation_date ASC';
-
-$lots = select_data($link, $sql);
+$categories = get_categories($link);
+$lots = get_open_lots($link);
 
 $content = get_html_code(
     'templates/index.php',

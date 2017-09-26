@@ -140,6 +140,22 @@ function format_price($price) {
     return $price;
 }
 
+function get_bets_by_lot($link, $lot) {
+    $sql = 'SELECT name, cost, betting_date FROM bets b ' .
+        'JOIN users u ' .
+            'ON buyer = u.id ' .
+        'WHERE lot = ? ' .
+        'ORDER BY betting_date DESC';
+
+    $bets = select_data($link, $sql, [$lot]);
+
+    return $bets;
+}
+
+function get_categories($link) {
+    return select_data($link, 'SELECT * FROM categories ORDER BY id ASC');
+}
+
 function get_html_code($template, $data) {
     extract($data);
 
@@ -152,6 +168,29 @@ function get_html_code($template, $data) {
     };
 
     return $html_code;
+}
+
+function get_lot_by_id($link, $id) {
+    $sql = 'SELECT l.id, title, picture, c.category, description, expiration_date, starting_price, step, seller FROM lots l ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE l.id = ?';
+
+    $lot = select_data($link, $sql, [$id])[0];
+
+    return $lot;
+}
+
+function get_open_lots($link) {
+    $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE expiration_date > NOW() ' .
+        'ORDER BY creation_date ASC';
+
+    $open_lots = select_data($link, $sql);
+
+    return $open_lots;
 }
 
 function handle_picture($form_data, $table, $required = false) {
@@ -262,6 +301,20 @@ function select_data($link, $sql, $data = []) {
     mysqli_stmt_close($stmt);
 
     return $array;
+}
+
+function get_user_bets($link, $user) {
+    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
+        'JOIN lots l ' .
+            'ON lot = l.id ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE buyer = ? ' .
+        'ORDER BY betting_date DESC';
+
+    $user_bets = select_data($link, $sql, [$user]);
+
+    return $user_bets;
 }
 
 function validate_email($form_data, $existing_emails) {
