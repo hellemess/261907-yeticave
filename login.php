@@ -32,7 +32,7 @@ if (!empty($_POST) && empty($errors)) {
     $email = $user_data['email'];
     $password = $user_data['password'];
 
-    $sql = 'SELECT email FROM users'
+    $sql = 'SELECT email FROM users '
         . 'WHERE email = ?';
 
     $emails_matched = select_data($link, $sql, [$email]);

@@ -197,9 +197,10 @@ function get_open_lots($link) {
 }
 
 function handle_picture($form_data, $table, $required = false) {
+
     if (!empty($_FILES['picture']['name'])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_name = $table['code'] . '-' . $table['number'] + 1 . '.' . substr($_FILES['picture']['type'], 6);
+        $file_name = $table['code'] . '-' . ($table['number'] + 1) . '.' . substr($_FILES['picture']['type'], 6);
         $file_type = finfo_file($finfo, $_FILES['picture']['tmp_name']);
 
         if ($file_type !== 'image/gif' || $file_type !== 'image/jpg' || $file_type !== 'image/jpeg' || $file_type !== 'image/png') {
@@ -208,14 +209,14 @@ function handle_picture($form_data, $table, $required = false) {
             $file_path = __DIR__ . '/img/';
             move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
         }
+
+        if (empty($form_data['errors'])) {
+            $form_data['fields']['picture'] = 'img/' . $file_name;
+        }
     } else {
         if ($required) {
             $form_data['errors']['picture'] = 'Добавьте изображение.';
         }
-    }
-
-    if (!empty($_FILES['picture']['name']) && empty($form_data['errors'])) {
-        $form_data['fields']['picture'] = 'img/' . $file_name;
     }
 
     return $form_data;
@@ -326,7 +327,7 @@ function validate_email($link, $form_data) {
     if (!$result) {
         $form_data['errors']['email'] = 'Введите корректный адрес электронной почты.';
     } else {
-        $sql = 'SELECT email FROM users'
+        $sql = 'SELECT email FROM users '
             . 'WHERE email = ?';
 
         $emails_matched = select_data($link, $sql, [$form_data['fields']['email']]);
