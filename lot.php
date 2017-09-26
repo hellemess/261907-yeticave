@@ -4,6 +4,7 @@ session_start();
 require_once 'functions.php';
 require_once 'init.php';
 require_once 'nav.php';
+require_once 'vendor/autoload.php';
 
 check_connection($link);
 
