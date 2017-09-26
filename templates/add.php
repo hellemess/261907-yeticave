@@ -1,4 +1,3 @@
-<?=$nav; ?>
 <form class="form form--add-lot container <?=!empty($errors) ? 'form--invalid' : ''; ?>" action="/add.php" method="post" enctype="multipart/form-data">
 <h2>Добавление лота</h2>
 <div class="form__container-two">
@@ -12,7 +11,7 @@
     <select id="category" name="category" required>
       <option value="">Выберите категорию</option>
       <?php foreach ($categories as $category): ?>
-      <option <?=$category == $fields['category'] ? 'selected' : ''; ?>><?=$category; ?></option>
+      <option value="<?=$category['id']; ?>" <?=$category['id'] == $fields['category'] ? 'selected' : ''; ?>><?=$category['category']; ?></option>
       <?php endforeach; ?>
     </select>
     <span class="form__error"><?=isset($errors['category']) ? $errors['category'] : ''; ?></span>

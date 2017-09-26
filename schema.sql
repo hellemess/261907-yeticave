@@ -5,8 +5,9 @@ CREATE DATABASE yeticave
 USE yeticave;
 
 CREATE TABLE categories (
-  id    INT (10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  title CHAR (15) NOT NULL
+  id       INT (10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  category CHAR (15) NOT NULL,
+  link     CHAR (15) NOT NULL
 );
 
 CREATE TABLE users (
@@ -15,7 +16,7 @@ CREATE TABLE users (
   registration_date DATETIME,
   name              CHAR (100) NOT NULL,
   password          CHAR (60) NOT NULL,
-  avatar            CHAR (20),
+  picture           CHAR (20),
   contacts          TEXT
 );
 
@@ -47,7 +48,7 @@ CREATE TABLE bets (
   FOREIGN KEY (lot) REFERENCES lots (id)
 );
 
-CREATE UNIQUE INDEX c_title ON categories (title);
+CREATE UNIQUE INDEX c_title ON categories (category);
 
 CREATE UNIQUE INDEX u_email ON users (email);
 

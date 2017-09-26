@@ -27,29 +27,37 @@ if (!empty($_POST)) {
     $errors = $form_data['errors'];
 }
 
-require_once 'userdata.php';
-
 if (!empty($_POST) && empty($errors)) {
-    foreach ($users as $user) {
-        $user_data = post();
-        $email = $user_data['email'];
-        $password = $user_data['password'];
+    $user_data = post();
+    $email = $user_data['email'];
+    $password = $user_data['password'];
 
-        if ($email = $user['email'] && password_verify($password, $user['password'])) {
+    $sql = 'SELECT id, email, name, password FROM users '
+        . 'WHERE email = ?';
+
+    $matching_user = select_data($link, $sql, [$email]);
+
+    if (!empty($matching_user)) {
+        $user = $matching_user[0];
+
+        if (password_verify($password, $user['password'])) {
             $_SESSION['user']['name'] = $user['name'];
+            $_SESSION['user']['id'] = $user['id'];
             header('Location: index.php');
         } else {
             $errors['password'] = 'Вы ввели неверный пароль';
         }
+    } else {
+        $errors['email'] = 'Пользователь с таким электронным адресом не найден. Проверьте правильность адреса или зарегистрируйтесь.';
     }
 }
 
 $content = get_html_code(
     'templates/login.php',
     [
-        'nav' => $nav,
         'errors' => $errors,
-        'fields' => $fields
+        'fields' => $fields,
+        'users' => $users
     ]
 );
 
@@ -59,6 +67,7 @@ $html_code = get_html_code(
         'title' => 'Yeti Cave — Войти',
         'is_auth' => $is_auth,
         'user_name' => $user_name,
+        'nav' => $nav,
         'content' => $content
     ]
 );

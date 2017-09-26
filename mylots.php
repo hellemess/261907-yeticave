@@ -10,17 +10,13 @@ check_connection($link);
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
-    $user_bets = [];
-
-    if (isset($_COOKIE['BETS'])) {
-        $user_bets = json_decode($_COOKIE['BETS'], true);
-    }
+    $user_id = $_SESSION['user']['id'];
+    $user_bets = get_user_bets($link, $user_id);
 
     $content = get_html_code(
         'templates/mylots.php',
         [
-            'nav' => $nav,
-            'user_bets' => array_reverse($user_bets)
+            'user_bets' => $user_bets
         ]
     );
 
@@ -32,12 +28,15 @@ if (isset($_SESSION['user']['name'])) {
 } else {
     $is_auth = false;
     http_response_code(403);
+    $error_status = 403;
 
     $content = get_html_code(
         'templates/error.php',
         [
-            'nav' => $nav,
-            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут просматривать список сделанных ставок (и делать их). Пожалуйста, <a class="text-link" href="login.php">войдите</a> на сайт.'
+            'error_status' => $error_status,
+            'error' => 'Доступ запрещен. Незарегистрированные пользователи не могут просматривать список сделанных ставок (и делать их). Пожалуйста,
+                    <a class="text-link" href="login.php">войдите</a>
+                на сайт.'
         ]
     );
 
@@ -47,6 +46,8 @@ if (isset($_SESSION['user']['name'])) {
         'content' => $content
     ];
 }
+
+$data['nav'] = $nav;
 
 $html_code = get_html_code(
     'templates/layout.php',

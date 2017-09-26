@@ -24,7 +24,7 @@
             <?php if ($is_auth): ?>
             <ul class="user-menu__list">
                 <li class="user-menu__item">
-                    <a href="#"><?=$user_name; ?></a>
+                    <a href="/mylots.php"><?=$user_name; ?></a>
                 </li>
                 <li class="user-menu__item">
                     <a href="/logout.php">Выход</a>
@@ -33,7 +33,7 @@
             <?php else: ?>
             <ul class="user-menu__list">
                 <li class="user-menu__item">
-                    <a href="#">Регистрация</a>
+                    <a href="/signup.php">Регистрация</a>
                 </li>
                 <li class="user-menu__item">
                     <a href="login.php">Вход</a>
@@ -44,31 +44,13 @@
     </div>
 </header>
 
-<main <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? 'class="container"' : ''; ?>><?=$content; ?></main>
+<main <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? 'class="container"' : ''; ?>>
+    <?=$_SERVER['REQUEST_URI'] == '/index.php' || $_SERVER['REQUEST_URI'] == '/' ? '' : $nav; ?>
+    <?=$content; ?>
+</main>
 
 <footer class="main-footer">
-    <nav class="nav">
-        <ul class="nav__list container">
-            <li class="nav__item">
-                <a href="all-lots.html">Доски и лыжи</a>
-            </li>
-            <li class="nav__item">
-                <a href="all-lots.html">Крепления</a>
-            </li>
-            <li class="nav__item">
-                <a href="all-lots.html">Ботинки</a>
-            </li>
-            <li class="nav__item">
-                <a href="all-lots.html">Одежда</a>
-            </li>
-            <li class="nav__item">
-                <a href="all-lots.html">Инструменты</a>
-            </li>
-            <li class="nav__item">
-                <a href="all-lots.html">Разное</a>
-            </li>
-        </ul>
-    </nav>
+    <?=$nav; ?>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2017, YetiCave</p>

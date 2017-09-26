@@ -5,6 +5,44 @@ define('SECONDS_IN_DAY', 86400);
 
 require_once 'mysql_helper.php';
 
+function calculate_remaining_time($date) {
+    // устанавливаем часовой пояс в Московское время
+    date_default_timezone_set('Europe/Moscow');
+
+    // временная метка для полночи следующего дня
+    $ts = strtotime($date);
+
+    // временная метка для настоящего времени
+    $now = strtotime('now');
+
+    $days_remaining = floor(($ts - $now) / SECONDS_IN_DAY);
+
+    if ($days_remaining > 1) {
+        switch ($days_remaining % 10) {
+            case 1:
+                $lot_time_remaining = $days_remaining . ' день';
+                break;
+            case 2:
+            case 3:
+            case 4:
+                $lot_time_remaining = $days_remaining . ' дня';
+                break;
+            default:
+                $lot_time_remaining = $days_remaining . ' дней';
+        }
+    } else {
+        $hours_remaining = floor(($ts - $now) / SECONDS_IN_HOUR);
+        $hours_remaining = str_pad($hours_remaining, 2, '0', STR_PAD_LEFT);
+        $minutes_remaining = floor(($ts - $now) % SECONDS_IN_HOUR / SECONDS_IN_MINUTE);
+        $minutes_remaining = str_pad($minutes_remaining, 2, '0', STR_PAD_LEFT);
+
+        // записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
+        $lot_time_remaining = $hours_remaining . ':' . $minutes_remaining;
+    }
+
+    return $lot_time_remaining;
+}
+
 function check_connection($link) {
     if (!$link) {
         $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
@@ -89,6 +127,7 @@ function execute_query($link, $sql, $data = []) {
     if ($link) {
         $stmt = db_get_prepare_stmt($link, $sql, $data);
         $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
     return $result;
@@ -98,6 +137,22 @@ function format_price($price) {
     $price = $price > 9999 ? number_format($price, 0, ',', ' ') : $price;
 
     return $price;
+}
+
+function get_bets_by_lot($link, $lot) {
+    $sql = 'SELECT name, cost, betting_date FROM bets b ' .
+        'JOIN users u ' .
+            'ON buyer = u.id ' .
+        'WHERE lot = ? ' .
+        'ORDER BY betting_date DESC';
+
+    $bets = select_data($link, $sql, [$lot]);
+
+    return $bets;
+}
+
+function get_categories($link) {
+    return select_data($link, 'SELECT id, category, link FROM categories ORDER BY id ASC');
 }
 
 function get_html_code($template, $data) {
@@ -114,17 +169,55 @@ function get_html_code($template, $data) {
     return $html_code;
 }
 
-function handle_picture($form_data, $database) {
-    if (!empty($_FILES['picture']['name'])) {
-        $file_name = 'lot-' . (count($database) + 1) . '.' . substr($_FILES['picture']['type'], 6);
-        $file_path = __DIR__ . '/img/';
-        move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
-    } else {
-        $form_data['errors']['picture'] = 'Добавьте снимок лота.';
+function get_lot_by_id($link, $id) {
+    $sql = 'SELECT l.id, title, picture, c.category, description, expiration_date, starting_price, step, seller FROM lots l ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE l.id = ?';
+
+    $lot = select_data($link, $sql, [$id]);
+
+    if (!empty($lot)) {
+        $lot = $lot[0];
     }
 
-    if (empty($errors)) {
-        $form_data['fields']['picture'] = 'img/' . $file_name;
+    return $lot;
+}
+
+function get_open_lots($link) {
+    $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE expiration_date > NOW() ' .
+        'ORDER BY creation_date ASC';
+
+    $open_lots = select_data($link, $sql);
+
+    return $open_lots;
+}
+
+function handle_picture($form_data, $table, $required = false) {
+
+    if (!empty($_FILES['picture']['name'])) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $file_name = $table['code'] . '-' . ($table['number'] + 1) . '.' . substr($_FILES['picture']['type'], 6);
+        $file_type = finfo_file($finfo, $_FILES['picture']['tmp_name']);
+        $allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
+
+        if (!in_array($file_type, $allowed_types)) {
+            $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: JPG, JPEG или PNG.';
+        } else {
+            $file_path = __DIR__ . '/img/';
+            move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
+        }
+
+        if (empty($form_data['errors'])) {
+            $form_data['fields']['picture'] = 'img/' . $file_name;
+        }
+    } else {
+        if ($required) {
+            $form_data['errors']['picture'] = 'Добавьте изображение.';
+        }
     }
 
     return $form_data;
@@ -134,19 +227,20 @@ function insert_data($link, $table, $data) {
     $result = false;
 
     if ($link) {
-        $columns = '';
-        $placeholders = '';
-        $values = [];
+        $keys = array_keys($data);
+        $columns = implode(', ', $keys);
+        $placeholders = array_pad([], count($keys), '?');
+        $placeholders = implode(', ', $placeholders);
+        $values = array_values($data);
 
-        foreach ($data as $key => $value) {
-            $columns .= $key . ', ';
-            $placeholders .= '?, ';
-            $values[] = $value;
-        }
+        $sql = 'INSERT INTO '
+            . $table
+            . ' ('
+                . $columns
+            . ') VALUES ('
+                . $placeholders
+            . ')';
 
-        $columns = substr($columns, 0, -2);
-        $placeholders = substr($placeholders, 0, -2);
-        $sql = 'INSERT INTO ' . $table . ' (' . $columns . ') ' . 'VALUES (' . $placeholders . ')';
         $stmt = db_get_prepare_stmt($link, $sql, $values);
         mysqli_stmt_execute($stmt);
         $result = mysqli_insert_id($link);
@@ -154,6 +248,8 @@ function insert_data($link, $table, $data) {
         if ($result === 0) {
             $result = false;
         }
+
+        mysqli_stmt_close($stmt);
     }
 
     return $result;
@@ -202,12 +298,47 @@ function select_data($link, $sql, $data = []) {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             $array[] = $row;
         }
+
+        mysqli_stmt_close($stmt);
     }
 
     return $array;
+}
+
+function get_user_bets($link, $user) {
+    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
+        'JOIN lots l ' .
+            'ON lot = l.id ' .
+        'JOIN categories c ' .
+            'ON l.category = c.id ' .
+        'WHERE buyer = ? ' .
+        'ORDER BY betting_date DESC';
+
+    $user_bets = select_data($link, $sql, [$user]);
+
+    return $user_bets;
+}
+
+function validate_email($link, $form_data) {
+    $result = filter_var($form_data['fields']['email'], FILTER_VALIDATE_EMAIL);
+
+    if (!$result) {
+        $form_data['errors']['email'] = 'Введите корректный адрес электронной почты.';
+    } else {
+        $sql = 'SELECT email FROM users '
+            . 'WHERE email = ?';
+
+        $emails_matched = select_data($link, $sql, [$form_data['fields']['email']]);
+
+        if (!empty($emails_matched)) {
+            $form_data['errors']['email'] = 'Такой адрес уже зарегистрирован.';
+        }
+    }
+
+    return $form_data;
 }
 
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {

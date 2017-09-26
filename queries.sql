@@ -1,10 +1,28 @@
-INSERT INTO categories (title) VALUES
-  ('Доски и лыжи'),
-  ('Крепления'),
-  ('Ботинки'),
-  ('Одежда'),
-  ('Инструменты'),
-  ('Разное');
+INSERT INTO categories (category, link) VALUES
+  (
+    'Доски и лыжи',
+    'boards'
+  ),
+  (
+    'Крепления',
+    'attachment'
+  ),
+  (
+    'Ботинки',
+    'boots'
+  ),
+  (
+    'Одежда',
+    'clothing'
+  ),
+  (
+    'Инструменты',
+    'tools'
+  ),
+  (
+    'Разное',
+    'other'
+  );
 
 INSERT INTO users (email, name, password) VALUES
   (
@@ -166,12 +184,12 @@ INSERT INTO bets (betting_date, cost, buyer, lot) VALUES
   );
 
 -- Получим список из всех категорий.
-SELECT title FROM categories;
+SELECT category FROM categories;
 
 -- Получим самые новые, открытые лоты. Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, количество ставок, название категории.
-SELECT l.title, starting_price, picture, MAX(cost) AS cost, COUNT(b.id), c.title FROM bets b
+SELECT title, starting_price, picture, MAX(cost) AS cost, COUNT(b.id), c.category FROM bets b
   JOIN lots l
-    ON b.lot = l.id
+    ON lot = l.id
   JOIN categories c
     ON l.category = c.id
   WHERE expiration_date > NOW()
@@ -180,12 +198,12 @@ SELECT l.title, starting_price, picture, MAX(cost) AS cost, COUNT(b.id), c.title
   LIMIT 3;
 
 -- Найдем лот по его названию или описанию.
-SELECT l.title, starting_price, picture, MAX(cost) AS cost, COUNT(b.id), c.title FROM bets b
+SELECT title, starting_price, picture, MAX(cost) AS cost, COUNT(b.id), c.category FROM bets b
   JOIN lots l
-    ON b.lot = l.id
+    ON lot = l.id
   JOIN categories c
     ON l.category = c.id
-  WHERE l.title LIKE '%борд%'
+  WHERE title LIKE '%борд%'
     OR description LIKE '%борд%'
   GROUP BY lot;
 
@@ -197,9 +215,9 @@ UPDATE lots
 -- Получить список самых свежих ставок для лота по его идентификатору.
 SELECT title, cost, name FROM bets b
   JOIN lots l
-    ON b.lot = l.id
+    ON lot = l.id
   JOIN users u
-    ON b.buyer = u.id
+    ON buyer = u.id
   WHERE l.id = 1
   ORDER BY betting_date DESC
   LIMIT 3;

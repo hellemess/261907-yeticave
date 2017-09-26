@@ -1,8 +1,5 @@
 <?php
-require_once 'lots.php';
 require_once 'functions.php';
-
-print($nav);
 ?>
 <section class="rates container">
 <h2>Мои ставки</h2>
@@ -12,21 +9,21 @@ print($nav);
   <tr class="rates__item">
     <td class="rates__info">
       <div class="rates__img">
-        <img src="<?=$lots[$bet['id']]['picture']; ?>" width="54" height="40" alt="Сноуборд">
+        <img src="<?=$bet['picture']; ?>" width="54" height="40" alt="<?=$bet['title']; ?>">
       </div>
-      <h3 class="rates__title"><a href="lot.php?id=<?=$bet['id']; ?>"><?=$lots[$bet['id']]['title']; ?></a></h3>
+      <h3 class="rates__title"><a href="lot.php?id=<?=$bet['id']; ?>"><?=$bet['title']; ?></a></h3>
     </td>
     <td class="rates__category">
-      <?=$lots[$bet['id']]['category']; ?>
+      <?=$bet['category']; ?>
     </td>
     <td class="rates__timer">
-      <div class="timer timer--finishing">07:13:34</div>
+      <div class="timer timer--finishing"><?=calculate_remaining_time($bet['expiration_date']); ?></div>
     </td>
     <td class="rates__price">
       <?=$bet['cost']; ?>
     </td>
     <td class="rates__time">
-      <?=convert_ts($bet['time']); ?>
+      <?=convert_ts(strtotime($bet['betting_date'])); ?>
     </td>
   </tr>
   <?php endforeach; ?>
