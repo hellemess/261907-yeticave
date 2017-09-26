@@ -20,7 +20,7 @@
   <textarea id="message" name="contacts" placeholder="Напишите как с вами связаться" required><?=$fields['contacts']; ?></textarea>
   <span class="form__error"><?=isset($errors['contacts']) ? $errors['contacts'] : ''; ?></span>
 </div>
-<div class="form__item form__item--file form__item--last">
+<div class="form__item form__item--file form__item--last <?=isset($errors['picture']) ? 'form__item--invalid' : ''; ?>">
   <label>Изображение</label>
   <div class="preview">
     <button class="preview__remove" type="button">x</button>
@@ -33,6 +33,7 @@
     <label for="photo2">
       <span>+ Добавить</span>
     </label>
+    <span class="form__error"><?=isset($errors['picture']) ? $errors['picture'] : ''; ?></span>
   </div>
 </div>
 <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>

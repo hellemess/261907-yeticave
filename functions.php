@@ -18,7 +18,7 @@ function calculate_remaining_time($date) {
     $days_remaining = floor(($ts - $now) / SECONDS_IN_DAY);
 
     if ($days_remaining > 1) {
-        switch ($time_passed % 10) {
+        switch ($days_remaining % 10) {
             case 1:
                 $lot_time_remaining = $days_remaining . ' день';
                 break;
@@ -127,9 +127,8 @@ function execute_query($link, $sql, $data = []) {
     if ($link) {
         $stmt = db_get_prepare_stmt($link, $sql, $data);
         $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
-
-    mysqli_stmt_close($stmt);
 
     return $result;
 }
@@ -153,7 +152,7 @@ function get_bets_by_lot($link, $lot) {
 }
 
 function get_categories($link) {
-    return select_data($link, 'SELECT * FROM categories ORDER BY id ASC');
+    return select_data($link, 'SELECT id, category, link FROM categories ORDER BY id ASC');
 }
 
 function get_html_code($template, $data) {
@@ -176,7 +175,11 @@ function get_lot_by_id($link, $id) {
             'ON l.category = c.id ' .
         'WHERE l.id = ?';
 
-    $lot = select_data($link, $sql, [$id])[0];
+    $lot = select_data($link, $sql, [$id]);
+
+    if (!empty($lot)) {
+        $lot = $lot[0];
+    }
 
     return $lot;
 }
@@ -196,8 +199,8 @@ function get_open_lots($link) {
 function handle_picture($form_data, $table, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_name = $table['code'] . '-' . (count($table['table']) + 1) . '.' . substr($_FILES['picture']['type'], 6);
-        $file_type = finfo_file($finfo, $file_name);
+        $file_name = $table['code'] . '-' . $table['number'] + 1 . '.' . substr($_FILES['picture']['type'], 6);
+        $file_type = finfo_file($finfo, $_FILES['picture']['tmp_name']);
 
         if ($file_type !== 'image/gif' || $file_type !== 'image/jpg' || $file_type !== 'image/jpeg' || $file_type !== 'image/png') {
             $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: GIF, JPG, JPEG или PNG.';
@@ -211,7 +214,7 @@ function handle_picture($form_data, $table, $required = false) {
         }
     }
 
-    if (empty($form_data['errors'])) {
+    if (!empty($_FILES['picture']['name']) && empty($form_data['errors'])) {
         $form_data['fields']['picture'] = 'img/' . $file_name;
     }
 
@@ -243,9 +246,9 @@ function insert_data($link, $table, $data) {
         if ($result === 0) {
             $result = false;
         }
-    }
 
-    mysqli_stmt_close($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
     return $result;
 }
@@ -296,9 +299,9 @@ function select_data($link, $sql, $data = []) {
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
             $array[] = $row;
         }
-    }
 
-    mysqli_stmt_close($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
     return $array;
 }
@@ -317,15 +320,18 @@ function get_user_bets($link, $user) {
     return $user_bets;
 }
 
-function validate_email($form_data, $existing_emails) {
+function validate_email($link, $form_data) {
     $result = filter_var($form_data['fields']['email'], FILTER_VALIDATE_EMAIL);
 
     if (!$result) {
         $form_data['errors']['email'] = 'Введите корректный адрес электронной почты.';
-    }
+    } else {
+        $sql = 'SELECT email FROM users'
+            . 'WHERE email = ?';
 
-    foreach ($existing_emails as $email) {
-        if ($email['email'] == $form_data['fields']['email']) {
+        $emails_matched = select_data($link, $sql, [$form_data['fields']['email']]);
+
+        if (!empty($emails_matched)) {
             $form_data['errors']['email'] = 'Такой адрес уже зарегистрирован.';
         }
     }

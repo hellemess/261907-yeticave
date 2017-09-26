@@ -7,6 +7,8 @@ require_once 'nav.php';
 
 check_connection($link);
 
+$user_name = null;
+
 if (isset($_SESSION['user']['name'])) {
     $is_auth = true;
     $user_name = $_SESSION['user']['name'];
@@ -21,8 +23,7 @@ $content = get_html_code(
     'templates/index.php',
     [
         'categories' => $categories,
-        'lots' => $lots,
-        'lot_time_remaining' => $lot_time_remaining
+        'lots' => $lots
     ]
 );
 

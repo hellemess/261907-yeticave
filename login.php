@@ -27,21 +27,26 @@ if (!empty($_POST)) {
     $errors = $form_data['errors'];
 }
 
-$users = select_data($link, 'SELECT id, email, name, password FROM users');
-
 if (!empty($_POST) && empty($errors)) {
-    foreach ($users as $user) {
-        $user_data = post();
-        $email = $user_data['email'];
-        $password = $user_data['password'];
+    $user_data = post();
+    $email = $user_data['email'];
+    $password = $user_data['password'];
 
-        if ($email = $user['email'] && password_verify($password, $user['password'])) {
+    $sql = 'SELECT email FROM users'
+        . 'WHERE email = ?';
+
+    $emails_matched = select_data($link, $sql, [$email]);
+
+    if (!empty($emails_matched)) {
+        if (password_verify($password, $user['password'])) {
             $_SESSION['user']['name'] = $user['name'];
             $_SESSION['user']['id'] = $user['id'];
             header('Location: index.php');
         } else {
             $errors['password'] = 'Вы ввели неверный пароль';
         }
+    } else {
+        $errors['email'] = 'Пользователь с таким электронным адресом не найден. Проверьте правильность адреса или зарегистрируйтесь.';
     }
 }
 

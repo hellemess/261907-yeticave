@@ -29,15 +29,15 @@ if (!$is_auth) {
     $required_fields = ['email', 'name', 'password', 'contacts'];
 
     if (!empty($_POST)) {
-        $users = select_data($link, 'SELECT email FROM users');
+        $users_count = select_data($link, 'SELECT COUNT(*) as count FROM lots')[0]['count'];
         $form_data = is_filled($fields, $required_fields);
-        $form_data = validate_email($form_data, $users);
+        $form_data = validate_email($link, $form_data);
 
         $form_data = handle_picture(
             $form_data,
             [
                 'code' => 'user',
-                'table' => $users
+                'number' => $users_count
             ]
         );
 
@@ -47,7 +47,7 @@ if (!$is_auth) {
 
     if (!empty($_POST) && empty($errors)) {
         $fields['password'] = password_hash($fields['password'], PASSWORD_DEFAULT);
-        $fields['registration_date'] = date_format(date_create('now'), 'Y-m-d H:i:s');
+        $fields['registration_date'] = date('Y-m-d H:i:s');
 
         $user_id = insert_data($link, 'users', $fields);
 

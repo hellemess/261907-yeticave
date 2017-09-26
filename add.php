@@ -12,7 +12,7 @@ if (isset($_SESSION['user']['name'])) {
     $user_name = $_SESSION['user']['name'];
     $user_id = $_SESSION['user']['id'];
     $categories = get_categories($link);
-    $lots = select_data($link, 'SELECT id FROM lots');
+    $content = null;
 
     $fields = [
         'title' => '',
@@ -27,6 +27,7 @@ if (isset($_SESSION['user']['name'])) {
     $numeric_fields = ['starting_price', 'step'];
 
     if (!empty($_POST)) {
+        $lots_count = select_data($link, 'SELECT COUNT(*) as count FROM lots')[0]['count'];
         $form_data = is_filled($fields, $required_fields);
         $form_data = validate_numeric_data($form_data, $numeric_fields);
 
@@ -34,7 +35,7 @@ if (isset($_SESSION['user']['name'])) {
             $form_data,
             [
                 'code' => 'lot',
-                'table' => $lots
+                'number' => $lots_count
             ],
             true
         );
@@ -44,8 +45,8 @@ if (isset($_SESSION['user']['name'])) {
     }
 
     if (!empty($_POST) && empty($errors)) {
-        $fields['expiration_date'] = date_format(date_create($fields['expiration_date']), 'Y-m-d H:i:s');
-        $fields['creation_date'] = date_format(date_create('now'), 'Y-m-d H:i:s');
+        $fields['expiration_date'] = date('Y-m-d H:i:s', strtotime($fields['expiration_date']));
+        $fields['creation_date'] = date('Y-m-d H:i:s');
         $fields['seller'] = $user_id;
 
         $lot_id = insert_data($link, 'lots', $fields);

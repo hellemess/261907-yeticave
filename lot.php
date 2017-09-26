@@ -79,7 +79,7 @@ if ($is_betting_available) {
 
     if (!empty($_POST) && empty($errors)) {
         $user_bet = [
-            'betting_date' => date_format(date_create('now'), 'Y-m-d H:i:s'),
+            'betting_date' => date('Y-m-d H:i:s'),
             'cost' => post('cost'),
             'buyer' => $data['user_id'],
             'lot' => $lot['id']
