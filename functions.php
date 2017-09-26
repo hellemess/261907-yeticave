@@ -205,7 +205,7 @@ function handle_picture($form_data, $table, $required = false) {
         $allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
 
         if (!in_array($file_type, $allowed_types)) {
-            $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: GIF, JPG, JPEG или PNG.';
+            $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: JPG, JPEG или PNG.';
         } else {
             $file_path = __DIR__ . '/img/';
             move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
