@@ -44,4 +44,5 @@ require_once 'functions.php';
         </li>
     <?php endforeach; ?>
     </ul>
+    <?=$pagination; ?>
 </section>

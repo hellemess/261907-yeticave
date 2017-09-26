@@ -17,13 +17,33 @@ if (isset($_SESSION['user']['name'])) {
 }
 
 $categories = get_categories($link);
-$lots = get_open_lots($link);
+$current_page = 1;
+
+if (isset($_GET['page'])) {
+    $current_page = $_GET['page'];
+}
+
+$lots_count = select_data($link, 'SELECT COUNT(id) as count FROM lots')[0]['count'];
+$lots_per_page = 3;
+$pages_count = ceil($lots_count / $lots_per_page);
+
+$lots = get_open_lots_for_page($link, $lots_per_page, $current_page);
+
+$pagination = get_html_code(
+    'templates/pagination.php',
+    [
+        'pages_count' => $pages_count,
+        'pages' => range(1, $pages_count),
+        'current_page' => $current_page
+    ]
+);
 
 $content = get_html_code(
     'templates/index.php',
     [
         'categories' => $categories,
-        'lots' => $lots
+        'lots' => $lots,
+        'pagination' => $pagination
     ]
 );
 
