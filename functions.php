@@ -156,9 +156,16 @@ function get_html_code($template, $data) {
 
 function handle_picture($form_data, $table, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_name = $table['code'] . '-' . (count($table['table']) + 1) . '.' . substr($_FILES['picture']['type'], 6);
-        $file_path = __DIR__ . '/img/';
-        move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
+        $file_type = finfo_file($finfo, $file_name);
+
+        if ($file_type !== 'image/gif' || $file_type !== 'image/jpg' || $file_type !== 'image/jpeg' || $file_type !== 'image/png') {
+            $form_data['errors']['picture'] = 'Загрузите картинку в одном из следующих форматов: GIF, JPG, JPEG или PNG.';
+        } else {
+            $file_path = __DIR__ . '/img/';
+            move_uploaded_file($_FILES['picture']['tmp_name'], $file_path . $file_name);
+        }
     } else {
         if ($required) {
             $form_data['errors']['picture'] = 'Добавьте изображение.';
