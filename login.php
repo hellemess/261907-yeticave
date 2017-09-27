@@ -21,6 +21,7 @@ $fields = [
 ];
 
 $required_fields = ['email', 'password'];
+$errors = null;
 
 if (!empty($_POST)) {
     $form_data = is_filled($fields, $required_fields);
@@ -57,20 +58,24 @@ $content = get_html_code(
     'templates/login.php',
     [
         'errors' => $errors,
-        'fields' => $fields,
-        'users' => $users
+        'fields' => $fields
     ]
 );
 
+$data = [
+    'title' => 'Yeti Cave — Войти',
+    'is_auth' => $is_auth,
+    'nav' => $nav,
+    'content' => $content
+];
+
+if (isset($user_name)) {
+    $data['user_name'] = $user_name;
+}
+
 $html_code = get_html_code(
     'templates/layout.php',
-    [
-        'title' => 'Yeti Cave — Войти',
-        'is_auth' => $is_auth,
-        'user_name' => $user_name,
-        'nav' => $nav,
-        'content' => $content
-    ]
+    $data
 );
 
 print($html_code);

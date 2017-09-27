@@ -7,7 +7,7 @@ require_once 'functions.php';
     <ul class="promo__list">
         <?php foreach ($categories as $category): ?>
         <li class="promo__item promo__item--<?=$category['link']; ?>">
-            <a class="promo__link" href="index.php?category=<?=$category['id']; ?>"><?=$category['category']; ?></a>
+            <a class="promo__link" href="search.php?category=<?=$category['id']; ?>"><?=$category['category']; ?></a>
         </li>
         <?php endforeach; ?>
     </ul>
@@ -15,12 +15,14 @@ require_once 'functions.php';
 <section class="lots">
     <div class="lots__header">
         <h2>Открытые лоты</h2>
-        <select class="lots__select">
-            <option>Все категории</option>
-            <?php foreach ($categories as $category): ?>
-            <option><?=$category['category']; ?></option>
-            <?php endforeach; ?>
-        </select>
+        <form method="get" action="/search.php">
+            <select onchange="this.form.submit()" class="lots__select" name="category">
+                <option>Все категории</option>
+                <?php foreach ($categories as $category): ?>
+                <option value="<?=$category['id']; ?>"><?=$category['category']; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </form>
     </div>
     <ul class="lots__list">
     <?php foreach ($lots as $lot): ?>
@@ -36,8 +38,8 @@ require_once 'functions.php';
                         <span class="lot__amount">Стартовая цена</span>
                         <span class="lot__cost"><?=format_price($lot['starting_price']); ?><b class="rub">р</b></span>
                     </div>
-                    <div class="lot__timer timer">
-                        <?=calculate_remaining_time($lot['expiration_date']); ?>
+                    <div class="lot__timer timer <?=isset($lot['class']) ? 'timer--' . $lot['class'] : ''; ?>">
+                        <?=$lot['expiration_date']; ?>
                     </div>
                 </div>
             </div>

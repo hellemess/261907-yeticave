@@ -28,6 +28,7 @@ if (!$is_auth) {
     ];
 
     $required_fields = ['email', 'name', 'password', 'contacts'];
+    $errors = null;
 
     if (!empty($_POST)) {
         $users_count = select_data($link, 'SELECT COUNT(*) as count FROM lots')[0]['count'];

@@ -5,7 +5,7 @@
     </li>
     <?php foreach ($pages as $page): ?>
     <li class="pagination-item <?php if ((int) $page === (int) $current_page): ?>pagination-item-active<?php endif; ?>">
-        <a href="/index.php?page=<?=$page; ?>"><?=$page; ?></a>
+        <a href="?page=<?=$page; ?><?=!empty($link) ? $link : ''; ?>"><?=$page; ?></a>
     </li>
     <?php endforeach; ?>
     <li class="pagination-item pagination-item-next">

@@ -1,6 +1,6 @@
-<form class="form container <?=!empty($errors) ? 'form--invalid' : ''; ?>" action="/signup.php" method="post" enctype="multipart/form-data"> <!-- form--invalid -->
+<form class="form container <?=!empty($errors) ? 'form--invalid' : ''; ?>" action="/signup.php" method="post" enctype="multipart/form-data">
 <h2>Регистрация нового аккаунта</h2>
-<div class="form__item <?=isset($errors['email']) ? 'form__item--invalid' : ''; ?>"> <!-- form__item--invalid -->
+<div class="form__item <?=isset($errors['email']) ? 'form__item--invalid' : ''; ?>">
   <label for="email">E-mail*</label>
   <input id="email" type="email" name="email" placeholder="Введите e-mail" value="<?=$fields['email']; ?>" required>
   <span class="form__error"><?=isset($errors['email']) ? $errors['email'] : ''; ?></span>
