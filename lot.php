@@ -20,6 +20,7 @@ if (isset($_SESSION['user']['name'])) {
     ];
 }
 
+$lot = [];
 $lot_not_found = true;
 $is_betting_available = false;
 
@@ -27,7 +28,7 @@ if (isset($_GET['id'])) {
     $lot = get_lot_by_id($link, $_GET['id']);
 }
 
-if (isset($lot) && !empty($lot)) {
+if (!empty($lot)) {
     $lot_not_found = false;
     $data['title'] = 'Yeti Cave — ' . $lot['title'];
     $bets = get_bets_by_lot($link, $lot['id']);
@@ -65,6 +66,7 @@ if ($is_betting_available) {
 
     $required_fields = ['cost'];
     $numeric_fields = ['cost'];
+    $errors = null;
     $min = $lot['starting_price'] + $lot['step'];
 
     if (!empty($_POST)) {

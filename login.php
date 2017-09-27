@@ -21,6 +21,7 @@ $fields = [
 ];
 
 $required_fields = ['email', 'password'];
+$errors = null;
 
 if (!empty($_POST)) {
     $form_data = is_filled($fields, $required_fields);
@@ -57,8 +58,7 @@ $content = get_html_code(
     'templates/login.php',
     [
         'errors' => $errors,
-        'fields' => $fields,
-        'users' => $users
+        'fields' => $fields
     ]
 );
 

@@ -199,7 +199,7 @@ function get_lot_by_id($link, $id) {
     return $lot;
 }
 
-function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition = '', $value = '') {
+function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition = '', $value = []) {
     $offset = ($current_page - 1) * $lots_per_page;
 
     $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l '

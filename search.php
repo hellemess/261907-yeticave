@@ -4,6 +4,9 @@ $is_search_active = false;
 require_once 'functions.php';
 require_once 'init.php';
 
+$key_word = null;
+$category_name = null;
+
 if (!empty($_GET['search'])) {
     $key_word = htmlspecialchars($_GET['search']);
     $key_word = trim($key_word);
@@ -73,10 +76,12 @@ if ($is_search_active) {
         ]
     );
 
+    $key_phrase = isset($key_word) ? 'Результаты поиска по запросу «<span>' . $key_word. '</span>»' : 'Все лоты в категории «' . $category_name . '»';
+
     $content = get_html_code(
         'templates/search.php',
         [
-            'key_phrase' => isset($key_word) ? 'Результаты поиска по запросу «<span>' . $key_word. '</span>»' : 'Все лоты в категории «' . $category_name . '»',
+            'key_phrase' => $key_phrase,
             'found_lots' => $found_lots,
             'pagination' => $pagination
         ]
@@ -85,7 +90,7 @@ if ($is_search_active) {
     $html_code = get_html_code(
         'templates/layout.php',
         [
-            'title' => 'Yeti Cave — Результат поиска по запросу: ' . $key_word,
+            'title' => 'Yeti Cave — ' . $key_phrase,
             'is_auth' => $is_auth,
             'user_name' => $user_name,
             'nav' => $nav,
