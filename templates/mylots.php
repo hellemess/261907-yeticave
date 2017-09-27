@@ -6,7 +6,7 @@ require_once 'functions.php';
 <?php if (!empty($user_bets)): ?>
 <table class="rates__list">
   <?php foreach ($user_bets as $bet): ?>
-  <tr class="rates__item <?php if ($bet['won']): ?>rates__item--win<?php elseif ($bet['class'] === 'end'): ?>rates__item--end<?php endif; ?>">
+  <tr class="rates__item <?php if (isset($bet['won'])): ?>rates__item--win<?php elseif ($bet['class'] === 'end'): ?>rates__item--end<?php endif; ?>">
     <td class="rates__info">
       <div class="rates__img">
         <img src="<?=$bet['picture']; ?>" width="54" height="40" alt="<?=$bet['title']; ?>">
