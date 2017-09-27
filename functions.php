@@ -5,6 +5,18 @@ define('SECONDS_IN_DAY', 86400);
 
 require_once 'mysql_helper.php';
 
+function assign_class($lot) {
+    $lot['expiration_date'] = calculate_remaining_time($lot['expiration_date']);
+
+    if ($lot['expiration_date'] === 'Торги окончены') {
+        $lot['class'] = 'end';
+    } elseif (!strpos($lot['expiration_date'], 'д')) {
+        $lot['class'] = 'finishing';
+    }
+
+    return $lot;
+}
+
 function calculate_remaining_time($date) {
     // устанавливаем часовой пояс в Московское время
     date_default_timezone_set('Europe/Moscow');
@@ -17,7 +29,9 @@ function calculate_remaining_time($date) {
 
     $days_remaining = floor(($ts - $now) / SECONDS_IN_DAY);
 
-    if ($days_remaining > 1) {
+    if ($ts < $now) {
+        $lot_time_remaining = 'Торги окончены';
+    } elseif ($days_remaining > 1) {
         switch ($days_remaining % 10) {
             case 1:
                 $lot_time_remaining = $days_remaining . ' день';
@@ -75,7 +89,7 @@ function convert_ts($ts) {
     } elseif ($time_passed < SECONDS_IN_HOUR) {
         $time_passed = floor($time_passed / SECONDS_IN_MINUTE);
 
-        if ($time_passed == 1) {
+        if ($time_passed === 1) {
             $time_passed = 'Минуту назад';
         } elseif ($time_passed > 10 && $time_passed < 20) {
             $time_passed = $time_passed . ' минут назад';
@@ -96,7 +110,7 @@ function convert_ts($ts) {
     } elseif ($time_passed < SECONDS_IN_DAY) {
         $time_passed = floor($time_passed / SECONDS_IN_HOUR);
 
-        if ($time_passed == 1) {
+        if ($time_passed === 1) {
             $time_passed = 'Час назад';
         } elseif ($time_passed > 10 && $time_passed < 20) {
             $time_passed = $time_passed . ' часов назад';
@@ -179,6 +193,7 @@ function get_lot_by_id($link, $id) {
 
     if (!empty($lot)) {
         $lot = $lot[0];
+        $lot = assign_class($lot);
     }
 
     return $lot;
@@ -200,11 +215,17 @@ function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition
 
     $open_lots = select_data($link, $sql, $data);
 
+    foreach ($open_lots as $lot) {
+        $lot = assign_class($lot);
+        $open_lots[] = $lot;
+        array_shift($open_lots);
+    }
+
     return $open_lots;
 }
 
 function get_user_bets($link, $user) {
-    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date FROM bets b ' .
+    $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date, winner, b.id AS bet FROM bets b ' .
         'JOIN lots l ' .
             'ON lot = l.id ' .
         'JOIN categories c ' .
@@ -281,7 +302,7 @@ function is_filled($fields, $required_fields) {
     foreach (post() as $key => $value) {
         $key = str_replace('-', '_', $key);
 
-        if (in_array($key, $required_fields) && $value == '') {
+        if (in_array($key, $required_fields) && $value === '') {
             $errors[$key] = 'Заполните это поле.';
         }
 

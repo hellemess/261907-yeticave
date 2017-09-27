@@ -41,16 +41,16 @@ if (isset($lot) && !empty($lot)) {
         'bets' => $bets
     ];
 
-    if ($data['is_auth']) {
+    if ($data['is_auth'] && $lot['class'] !== 'end') {
         $is_betting_available = true;
 
         foreach ($bets as $bet) {
-            if ($bet['name'] == $data['user_name']) {
+            if ($bet['name'] === $data['user_name']) {
                 $is_betting_available = false;
             }
         }
 
-        if ($lot['seller'] == $data['user_id']) {
+        if ($lot['seller'] === $data['user_id']) {
             $is_betting_available = false;
         }
 

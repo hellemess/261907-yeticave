@@ -14,6 +14,30 @@ if (isset($_SESSION['user']['name'])) {
     $user_id = $_SESSION['user']['id'];
     $user_bets = get_user_bets($link, $user_id);
 
+    foreach ($user_bets as $bet) {
+        $bet = assign_class($bet);
+
+        if ($bet['winner'] === $user_id) {
+            $bet['won'] = true;
+            $bet['class'] = 'win';
+            $bet['expiration_date'] = 'Ставка выиграла';
+
+            $sql = 'SELECT contacts FROM users u '
+                . 'JOIN lots l '
+                    . 'ON u.id = seller '
+                . 'JOIN bets b '
+                    . 'ON lot = l.id '
+                . 'WHERE b.id = ?';
+
+            $bet['contacts'] = select_data($link, $sql, [$bet['bet']])[0]['contacts'];
+        }
+
+
+
+        $user_bets[] = $bet;
+        array_shift($user_bets);
+    }
+
     $content = get_html_code(
         'templates/mylots.php',
         [

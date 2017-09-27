@@ -14,8 +14,8 @@ require_once 'functions.php';
         <div class="lot-item__right">
             <?php if ($is_betting_available): ?>
             <div class="lot-item__state">
-                <div class="lot-item__timer timer">
-                    <?=calculate_remaining_time($lot['expiration_date']); ?>
+                <div class="lot-item__timer timer <?=isset($lot['class']) ? 'timer--' . $lot['class'] : ''; ?>">
+                    <?=$lot['expiration_date']; ?>
                 </div>
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">

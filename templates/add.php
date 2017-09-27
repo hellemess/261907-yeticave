@@ -11,7 +11,7 @@
     <select id="category" name="category" required>
       <option value="">Выберите категорию</option>
       <?php foreach ($categories as $category): ?>
-      <option value="<?=$category['id']; ?>" <?=$category['id'] == $fields['category'] ? 'selected' : ''; ?>><?=$category['category']; ?></option>
+      <option value="<?=$category['id']; ?>" <?=(int) $category['id'] === (int) $fields['category'] ? 'selected' : ''; ?>><?=$category['category']; ?></option>
       <?php endforeach; ?>
     </select>
     <span class="form__error"><?=isset($errors['category']) ? $errors['category'] : ''; ?></span>
@@ -22,7 +22,7 @@
   <textarea id="message" name="description" placeholder="Напишите описание лота" required><?=$fields['description']; ?></textarea>
   <span class="form__error"><?=isset($errors['description']) ? $errors['description'] : ''; ?></span>
 </div>
-<div class="form__item form__item--file <?=isset($errors['picture']) ? 'form__item--invalid' : ''; ?>"> <!-- form__item--uploaded -->
+<div class="form__item form__item--file <?=isset($errors['picture']) ? 'form__item--invalid' : ''; ?>">
   <label>Изображение</label>
   <div class="preview">
     <button class="preview__remove" type="button">x</button>

@@ -12,7 +12,7 @@ if (!empty($_GET['search'])) {
     $category = select_data($link, 'SELECT category FROM categories WHERE id = ?', [$_GET['category']]);
 
     if (!empty($category)) {
-        $category = $category_name[0]['name'];
+        $category_name = $category[0]['category'];
         $is_search_active = !empty($_GET['category']);
     }
 }

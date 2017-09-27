@@ -38,8 +38,8 @@ require_once 'functions.php';
                         <span class="lot__amount">Стартовая цена</span>
                         <span class="lot__cost"><?=format_price($lot['starting_price']); ?><b class="rub">р</b></span>
                     </div>
-                    <div class="lot__timer timer">
-                        <?=calculate_remaining_time($lot['expiration_date']); ?>
+                    <div class="lot__timer timer <?=isset($lot['class']) ? 'timer--' . $lot['class'] : ''; ?>">
+                        <?=$lot['expiration_date']; ?>
                     </div>
                 </div>
             </div>
