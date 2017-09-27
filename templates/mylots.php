@@ -11,7 +11,7 @@ require_once 'functions.php';
       <div class="rates__img">
         <img src="<?=$bet['picture']; ?>" width="54" height="40" alt="<?=$bet['title']; ?>">
       </div>
-      <?php if ($bet['won']):?>
+      <?php if (isset($bet['won'])):?>
       <div>
         <h3 class="rates__title"><a href="lot.php?id=<?=$bet['id']; ?>"><?=$bet['title']; ?></a></h3>
         <p><?=$bet['contacts']; ?></p>
