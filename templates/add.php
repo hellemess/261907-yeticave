@@ -51,7 +51,7 @@
   </div>
   <div class="form__item <?=isset($errors['expiration_date']) ? 'form__item--invalid' : ''; ?>">
     <label for="lot-date">Дата завершения</label>
-    <input class="form__input-date" id="lot-date" type="text" name="expiration-date" placeholder="20.05.2017" value="<?=$fields['expiration_date']; ?>" required>
+    <input class="form__input-date" id="lot-date" type="date" name="expiration-date" placeholder="20.05.2017" value="<?=$fields['expiration_date']; ?>" required>
     <span class="form__error"><?=isset($errors['expiration_date']) ? $errors['expiration_date'] : ''; ?></span>
   </div>
 </div>

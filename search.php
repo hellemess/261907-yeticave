@@ -5,7 +5,7 @@ require_once 'functions.php';
 require_once 'init.php';
 
 if (!empty($_GET['search'])) {
-    $key_word = htmlspecialchars($key_word);
+    $key_word = htmlspecialchars($_GET['search']);
     $key_word = trim($_GET['search']);
     $is_search_active = !empty($key_word);
 } else {
