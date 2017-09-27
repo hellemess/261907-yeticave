@@ -1,6 +1,6 @@
 <div class="container">
 <section class="lots">
-  <h2>Результаты поиска по запросу «<span><?=$key_word; ?></span>»</h2>
+  <h2><?=$key_phrase; ?></h2>
   <?php if (!empty($found_lots)): ?>
   <ul class="lots__list">
     <?php foreach ($found_lots as $lot): ?>

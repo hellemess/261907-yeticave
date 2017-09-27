@@ -184,21 +184,19 @@ function get_lot_by_id($link, $id) {
     return $lot;
 }
 
-function get_open_lots_for_page($link, $lots_per_page, $current_page, $is_search = false, $search_field = null) {
+function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition = '', $value = '') {
     $offset = ($current_page - 1) * $lots_per_page;
-
-    $search = $is_search ? 'AND (title LIKE ? OR description LIKE ?) ' : '';
 
     $sql = 'SELECT l.id, picture, title, c.category, starting_price, expiration_date FROM lots l '
         . 'JOIN categories c '
             . 'ON l.category = c.id '
         . 'WHERE expiration_date > NOW() '
-        . $search
+        . $condition
         . 'ORDER BY creation_date ASC '
         . 'LIMIT ? '
         . 'OFFSET ?';
 
-    $data = $is_search ? [$search_field, $search_field, $lots_per_page, $offset] : [$lots_per_page, $offset];
+    $data = !empty($value) ? array_merge($value, [$lots_per_page, $offset]) : [$lots_per_page, $offset];
 
     $open_lots = select_data($link, $sql, $data);
 

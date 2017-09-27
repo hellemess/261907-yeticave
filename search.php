@@ -1,15 +1,23 @@
 <?php
 $is_search_active = false;
 
+require_once 'functions.php';
+require_once 'init.php';
+
 if (!empty($_GET['search'])) {
     $key_word = htmlspecialchars($key_word);
     $key_word = trim($_GET['search']);
     $is_search_active = !empty($key_word);
+} else {
+    $category = select_data($link, 'SELECT category FROM categories WHERE id = ?', [$_GET['category']]);
+
+    if (!empty($category)) {
+        $category = $category_name[0]['name'];
+        $is_search_active = !empty($_GET['category']);
+    }
 }
 
 if ($is_search_active) {
-    require_once 'functions.php';
-    require_once 'init.php';
     require_once 'nav.php';
 
     check_connection($link);
@@ -23,15 +31,21 @@ if ($is_search_active) {
         $is_auth = false;
     }
 
-    $key_word = '%' . $key_word . '%';
+    if (isset($key_word)) {
+        $condition = 'AND (title LIKE ? OR description LIKE ?)';
+        $key_word = '%' . $key_word . '%';
+        $value = [$key_word, $key_word];
+    } else {
+        $condition = 'AND l.category = ?';
+        $value = [$_GET['category']];
+    }
 
-    $sql = 'SELECT COUNT(id) as count FROM lots '
+    $sql = 'SELECT COUNT(id) as count FROM lots l '
         . 'WHERE expiration_date > NOW() '
-            . 'AND (title LIKE ? '
-            . 'OR description LIKE ?)';
+            . $condition;
 
-    $lots_count = select_data($link, $sql, [$key_word, $key_word])[0]['count'];
-    $lots_per_page = 3;
+    $lots_count = select_data($link, $sql, $value)[0]['count'];
+    $lots_per_page = 9;
     $pages_count = ceil($lots_count / $lots_per_page);
     $current_page = 1;
 
@@ -39,9 +53,15 @@ if ($is_search_active) {
         $current_page = $_GET['page'];
     }
 
-    $found_lots = get_open_lots_for_page($link, $lots_per_page, $current_page, true, $key_word);
-    $key_word = substr($key_word, 1, -1);
-    $link = '&search=' . $key_word;
+    $condition .= ' ';
+    $found_lots = get_open_lots_for_page($link, $lots_per_page, $current_page, $condition, $value);
+
+    if (isset($key_word)) {
+        $key_word = substr($key_word, 1, -1);
+        $link = '&search=' . $key_word;
+    } else {
+        $link = '&category=' . $_GET['category'];
+    }
 
     $pagination = get_html_code(
         'templates/pagination.php',
@@ -53,18 +73,14 @@ if ($is_search_active) {
         ]
     );
 
-
-
     $content = get_html_code(
         'templates/search.php',
         [
-            'key_word' => $key_word,
+            'key_phrase' => isset($key_word) ? 'Результаты поиска по запросу «<span>' . $key_word. '</span>»' : 'Все лоты в категории «' . $category_name . '»',
             'found_lots' => $found_lots,
             'pagination' => $pagination
         ]
     );
-
-
 
     $html_code = get_html_code(
         'templates/layout.php',
@@ -79,5 +95,6 @@ if ($is_search_active) {
 
     print($html_code);
 } else {
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    $back = $_SERVER['HTTP_REFERER'] ?? '/index.php';
+    header('Location: ' . $back);
 }
