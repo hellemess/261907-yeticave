@@ -42,7 +42,7 @@ foreach ($closed_lots as $lot) {
             $sql = 'UPDATE lots SET winner = ? '
                 . 'WHERE id = ?';
 
-            $is_winnet_set = execute_query($link, $sql, [$winner['id'], $lot['id']]);
+            $is_winner_set = execute_query($link, $sql, [$winner['id'], $lot['id']]);
         }
     }
 

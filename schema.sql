@@ -24,7 +24,7 @@ CREATE TABLE lots (
   id              INT (10) AUTO_INCREMENT PRIMARY KEY NOT NULL,
   creation_date   DATETIME NOT NULL,
   title           CHAR (100) NOT NULL,
-  description     TEXT NOT NULL,
+  description     VARCHAR(500) NOT NULL,
   picture         CHAR (20) NOT NULL,
   starting_price  INT NOT NULL,
   expiration_date DATE NOT NULL,
@@ -52,4 +52,4 @@ CREATE UNIQUE INDEX c_title ON categories (category);
 
 CREATE UNIQUE INDEX u_email ON users (email);
 
-CREATE INDEX l_title ON lots (title);
+CREATE INDEX l_title ON lots (title, description);
