@@ -26,6 +26,7 @@ if (isset($_SESSION['user']['name'])) {
 
     $required_fields = ['title', 'category', 'description', 'expiration_date'];
     $numeric_fields = ['starting_price', 'step'];
+    $errors = null;
 
     if (!empty($_POST)) {
         $lots_count = select_data($link, 'SELECT COUNT(*) as count FROM lots')[0]['count'];

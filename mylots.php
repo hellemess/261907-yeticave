@@ -16,6 +16,7 @@ if (isset($_SESSION['user']['name'])) {
 
     foreach ($user_bets as $bet) {
         $bet = assign_class($bet);
+        $bet['contacts'] = null;
 
         if ($bet['winner'] === $user_id) {
             $bet['won'] = true;
@@ -31,8 +32,6 @@ if (isset($_SESSION['user']['name'])) {
 
             $bet['contacts'] = select_data($link, $sql, [$bet['bet']])[0]['contacts'];
         }
-
-
 
         $user_bets[] = $bet;
         array_shift($user_bets);
