@@ -12,6 +12,8 @@ function assign_class($lot) {
         $lot['class'] = 'end';
     } elseif (!strpos($lot['expiration_date'], 'д')) {
         $lot['class'] = 'finishing';
+    } else {
+        $lot['class'] = null;
     }
 
     return $lot;

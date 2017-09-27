@@ -62,15 +62,20 @@ $content = get_html_code(
     ]
 );
 
+$data = [
+    'title' => 'Yeti Cave — Войти',
+    'is_auth' => $is_auth,
+    'nav' => $nav,
+    'content' => $content
+];
+
+if (isset($user_name)) {
+    $data['user_name'] = $user_name;
+}
+
 $html_code = get_html_code(
     'templates/layout.php',
-    [
-        'title' => 'Yeti Cave — Войти',
-        'is_auth' => $is_auth,
-        'user_name' => $user_name,
-        'nav' => $nav,
-        'content' => $content
-    ]
+    $data
 );
 
 print($html_code);
