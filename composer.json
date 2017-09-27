@@ -1,6 +1,6 @@
 {
-    "name": "hellemess/localhost",
-    "type": "library",
+    "name": "hellemess/261907-yeticave",
+    "type": "project",
     "authors": [
         {
             "name": "Elena Esina",
@@ -8,6 +8,6 @@
         }
     ],
     "require": {
-        "respect/validation": "^1.1"
+        "swiftmailer/swiftmailer": "^6.0"
     }
 }

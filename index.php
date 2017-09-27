@@ -4,7 +4,7 @@ session_start();
 require_once 'functions.php';
 require_once 'init.php';
 require_once 'nav.php';
-require_once 'vendor/autoload.php';
+require_once 'getwinner.php';
 
 check_connection($link);
 
@@ -24,7 +24,10 @@ if (isset($_GET['page'])) {
     $current_page = $_GET['page'];
 }
 
-$lots_count = select_data($link, 'SELECT COUNT(id) as count FROM lots')[0]['count'];
+$sql = 'SELECT COUNT(id) as count FROM lots '
+    . 'WHERE expiration_date > NOW()';
+
+$lots_count = select_data($link, $sql)[0]['count'];
 $lots_per_page = 3;
 $pages_count = ceil($lots_count / $lots_per_page);
 
