@@ -6,7 +6,7 @@ require_once 'init.php';
 
 if (!empty($_GET['search'])) {
     $key_word = htmlspecialchars($_GET['search']);
-    $key_word = trim($_GET['search']);
+    $key_word = trim($key_word);
     $is_search_active = !empty($key_word);
 } else {
     $category = select_data($link, 'SELECT category FROM categories WHERE id = ?', [$_GET['category']]);
