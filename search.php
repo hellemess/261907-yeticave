@@ -1,7 +1,8 @@
 <?php
 $is_search_active = false;
 
-require_once 'functions.php';
+require_once 'db_functions.php';
+require_once 'utils.php';
 require_once 'init.php';
 
 $key_word = null;
@@ -21,6 +22,8 @@ if (!empty($_GET['search'])) {
 }
 
 if ($is_search_active) {
+    session_start();
+
     require_once 'nav.php';
 
     check_connection($link);

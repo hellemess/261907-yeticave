@@ -1,5 +1,5 @@
 <?php
-require_once 'functions.php';
+require_once 'format_functions.php';
 ?>
 <section class="rates container">
 <h2>Мои ставки</h2>
@@ -27,7 +27,7 @@ require_once 'functions.php';
       <div class="timer <?=isset($bet['class']) ? 'timer--' . $bet['class'] : ''; ?>"><?=$bet['expiration_date']; ?></div>
     </td>
     <td class="rates__price">
-      <?=$bet['cost']; ?>
+      <?=format_price($bet['cost']); ?>
     </td>
     <td class="rates__time">
       <?=convert_ts(strtotime($bet['betting_date'])); ?>

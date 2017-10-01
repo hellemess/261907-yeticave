@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-require_once 'functions.php';
+require_once 'db_functions.php';
+require_once 'form_functions.php';
+require_once 'utils.php';
 require_once 'init.php';
 require_once 'nav.php';
 require_once 'vendor/autoload.php';
@@ -54,8 +56,6 @@ if (!empty($lot)) {
         if ($lot['seller'] === $data['user_id']) {
             $is_betting_available = false;
         }
-
-        $content['is_betting_available'] = $is_betting_available;
     }
 }
 
@@ -121,6 +121,8 @@ if ($lot_not_found) {
         ]
     );
 } else {
+    $content['is_betting_available'] = $is_betting_available;
+
     $data['content'] = get_html_code(
         'templates/lot.php',
         $content
