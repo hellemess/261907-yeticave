@@ -2,10 +2,10 @@
 require_once 'mysql_helper.php';
 
 /**
-* Проверяет, установлено ли соединение с базой данных, необходимой для работы сайта, и если нет, то отображает страницу с текстом ошибки
-*
-* @param mysqli $link Ресурс соединения
-*/
+ * Проверяет, установлено ли соединение с базой данных, необходимой для работы сайта, и если нет, то отображает страницу с текстом ошибки
+ *
+ * @param mysqli $link Ресурс соединения
+ */
 function check_connection($link) {
     if (!$link) {
         $error = 'Произошла ошибка подключения! Текст ошибки: <blockquote><i>' . mysqli_connect_error() . '</i></blockquote>';
@@ -30,14 +30,14 @@ function check_connection($link) {
 }
 
 /**
-* Выполняет запрос к базе данных и сообщает результат
-*
-* @param mysqli $link Ресурс соединения
-* @param string $sql SQL-запрос с плейсхолдерами вместо значений
-* @param array $data Данные для вставки на место плейсхолдеров
-*
-* @return boolean Результат выполнения запроса
-*/
+ * Выполняет запрос к базе данных и сообщает результат
+ *
+ * @param mysqli $link Ресурс соединения
+ * @param string $sql  SQL-запрос с плейсхолдерами вместо значений
+ * @param array  $data Данные для вставки на место плейсхолдеров
+ *
+ * @return bool Результат выполнения запроса
+ */
 function execute_query($link, $sql, $data = []) {
     $result = false;
 
@@ -51,13 +51,13 @@ function execute_query($link, $sql, $data = []) {
 }
 
 /**
-* Возвращает массив с данными ставок на определенный лот
-*
-* @param mysqli $link Ресурс соединения
-* @param string $lot Идентификатор лота
-*
-* @return array Массив с данными ставок на определенный лот
-*/
+ * Возвращает массив с данными ставок на определенный лот
+ *
+ * @param mysqli $link Ресурс соединения
+ * @param string $lot  Идентификатор лота
+ *
+ * @return array Массив с данными ставок на определенный лот
+ */
 function get_bets_by_lot($link, $lot) {
     $sql = 'SELECT name, cost, betting_date FROM bets b ' .
         'JOIN users u ' .
@@ -71,24 +71,24 @@ function get_bets_by_lot($link, $lot) {
 }
 
 /**
-* Возвращает массив с данными категорий
-*
-* @param mysqli $link Ресурс соединения
-*
-* @return array Массив с данными категорий
-*/
+ * Возвращает массив с данными категорий
+ *
+ * @param mysqli $link Ресурс соединения
+ *
+ * @return array Массив с данными категорий
+ */
 function get_categories($link) {
     return select_data($link, 'SELECT id, category, link FROM categories ORDER BY id ASC');
 }
 
 /**
-* Возвращает массив с данными лота
-*
-* @param mysqli $link Ресурс соединения
-* @param string $id Идентификатор лота
-*
-* @return array Массив с данными лота
-*/
+ * Возвращает массив с данными лота
+ *
+ * @param mysqli $link Ресурс соединения
+ * @param string $id   Идентификатор лота
+ *
+ * @return array Массив с данными лота
+ */
 function get_lot_by_id($link, $id) {
     $sql = 'SELECT l.id, title, picture, c.category, description, expiration_date, starting_price, step, seller FROM lots l ' .
         'JOIN categories c ' .
@@ -106,16 +106,16 @@ function get_lot_by_id($link, $id) {
 }
 
 /**
-* Возвращает массив с данными лотов для вывода на определенной странице
-*
-* @param mysqli $link Ресурс соединения
-* @param integer $lots_per_page Количество лотов на странице
-* @param integer $current_page Номер страницы
-* @param string $condition Условие отбора лотов для вставки в SQL-запрос с плейсхолдерами на месте значений
-* @param array $value Данные для вставки на место плейсхолдеров
-*
-* @return array Массив с данными лотов
-*/
+ * Возвращает массив с данными лотов для вывода на определенной странице
+ *
+ * @param mysqli $link          Ресурс соединения
+ * @param int    $lots_per_page Количество лотов на странице
+ * @param int    $current_page  Номер страницы
+ * @param string $condition     Условие отбора лотов для вставки в SQL-запрос с плейсхолдерами на месте значений
+ * @param array  $value         Данные для вставки на место плейсхолдеров
+ *
+ * @return array Массив с данными лотов
+ */
 function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition = '', $value = []) {
     $offset = ($current_page - 1) * $lots_per_page;
 
@@ -142,13 +142,13 @@ function get_open_lots_for_page($link, $lots_per_page, $current_page, $condition
 }
 
 /**
-* Возвращает массив с данными ставок пользователя
-*
-* @param mysqli $link Ресурс соединения
-* @param string $user Идентификатор пользователя
-*
-* @return array Массив с данными ставок пользователя
-*/
+ * Возвращает массив с данными ставок пользователя
+ *
+ * @param mysqli $link Ресурс соединения
+ * @param string $user Идентификатор пользователя
+ *
+ * @return array Массив с данными ставок пользователя
+ */
 function get_user_bets($link, $user) {
     $sql = 'SELECT picture, l.id, title, c.category, expiration_date, cost, betting_date, winner, b.id AS bet FROM bets b ' .
         'JOIN lots l ' .
@@ -164,14 +164,14 @@ function get_user_bets($link, $user) {
 }
 
 /**
-* Добавляет запись в базу данных и возвращает ее идентификатор
-*
-* @param mysqli $link Ресурс соединения
-* @param string $table Имя базы данных
-* @param array $data Данные для добавления записи
-*
-* @return Результат выполнения запроса
-*/
+ * Добавляет запись в базу данных и возвращает ее идентификатор
+ *
+ * @param mysqli $link  Ресурс соединения
+ * @param string $table Имя базы данных
+ * @param array  $data  Данные для добавления записи
+ *
+ * @return int|bool Результат выполнения запроса
+ */
 function insert_data($link, $table, $data) {
     $result = false;
 
@@ -205,14 +205,14 @@ function insert_data($link, $table, $data) {
 }
 
 /**
-* Возвращает данные из базы, соответствующие запросу
-*
-* @param mysqli $link Ресурс соединения
-* @param string $sql SQL-запрос с плейсхолдерами вместо значений
-* @param array $data Данные для вставки на место плейсхолдеров
-*
-* @return array Массив с результатом выполнения запроса
-*/
+ * Возвращает данные из базы, соответствующие запросу
+ *
+ * @param mysqli $link Ресурс соединения
+ * @param string $sql  SQL-запрос с плейсхолдерами вместо значений
+ * @param array  $data Данные для вставки на место плейсхолдеров
+ *
+ * @return array Массив с результатом выполнения запроса
+ */
 function select_data($link, $sql, $data = []) {
     $array = [];
 

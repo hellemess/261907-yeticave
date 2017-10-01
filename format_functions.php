@@ -4,12 +4,12 @@ define('SECONDS_IN_HOUR', 3600);
 define('SECONDS_IN_DAY', 86400);
 
 /**
-* Рассчитывает время, оставшееся до окончания торгов, на основе переданной даты
-*
-* @param string $date Дата окончания торгов
-*
-* @return string Время, оставшееся до окончания торгов
-*/
+ * Рассчитывает время, оставшееся до окончания торгов, на основе переданной даты
+ *
+ * @param string $date Дата окончания торгов
+ *
+ * @return string Время, оставшееся до окончания торгов
+ */
 function calculate_remaining_time($date) {
     // устанавливаем часовой пояс в Московское время
     date_default_timezone_set('Europe/Moscow');
@@ -51,12 +51,12 @@ function calculate_remaining_time($date) {
 }
 
 /**
-* Создает строку, описывающую, сколько времени прошло с момента указанного времени
-*
-* @param integer $ts Временная метка, от которой ведется отсчет
-*
-* @return string Строка с указанием того, сколько прошло времени
-*/
+ * Создает строку, описывающую, сколько времени прошло с момента указанного времени
+ *
+ * @param int $ts Временная метка, от которой ведется отсчет
+ *
+ * @return string Строка с указанием того, сколько прошло времени
+ */
 function convert_ts($ts) {
     $now = strtotime('now');
     $time_passed = $now - $ts;
@@ -113,12 +113,12 @@ function convert_ts($ts) {
 }
 
 /**
-* Форматирует цену для вывода на экран
-*
-* @param integer $price Цена
-*
-* @return string Отформатированная цена
-*/
+ * Форматирует цену для вывода на экран
+ *
+ * @param int $price Цена
+ *
+ * @return string Отформатированная цена
+ */
 function format_price($price) {
     $price = $price > 9999 ? number_format($price, 0, ',', ' ') : $price;
 

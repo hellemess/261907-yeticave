@@ -1,14 +1,14 @@
 <?php
 
 /**
-* Обрабатывает картинку, загруженную пользователем
-*
-* @param array $form_data Массив с данными формы
-* @param array $table Массив с данными о базе данных, в которую будет записана ссылка на файл
-* @param boolean $required Указание, является ли загрузка картинки обязательной при заполнении формы
-*
-* @return array Массив с данными формы
-*/
+ * Обрабатывает картинку, загруженную пользователем
+ *
+ * @param array $form_data Массив с данными формы
+ * @param array $table     Массив с данными о базе данных, в которую будет записана ссылка на файл
+ * @param bool  $required  Указание, является ли загрузка картинки обязательной при заполнении формы
+ *
+ * @return array Массив с данными формы
+ */
 function handle_picture($form_data, $table, $required = false) {
     if (!empty($_FILES['picture']['name'])) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -36,13 +36,13 @@ function handle_picture($form_data, $table, $required = false) {
 }
 
 /**
-* Проверяет, заполнена ли форма
-*
-* @param array $fields Массив с данными, введенными пользователем
-* @param array $required_fields Массив с обязательными для заполнения полями
-*
-* @return array Массив с данными формы и данными об ошибках, если таковые есть
-*/
+ * Проверяет, заполнена ли форма
+ *
+ * @param array $fields          Массив с данными, введенными пользователем
+ * @param array $required_fields Массив с обязательными для заполнения полями
+ *
+ * @return array Массив с данными формы и данными об ошибках, если таковые есть
+ */
 function is_filled($fields, $required_fields) {
     $errors = [];
 
@@ -63,13 +63,13 @@ function is_filled($fields, $required_fields) {
 }
 
 /**
-* ОБрабатывает данные, отосланные пользоваьтелем в форму
-*
-* @param $key Ключ для получения данных из определенного поля
-* @param string $default_value Данные, которые возвращаются в случае, если нужное поле не заполнено или отсутствует
-*
-* @return Данные, обработанные с помощью функции htmlspecialchars()
-*/
+ * ОБрабатывает данные, отосланные пользоваьтелем в форму
+ *
+ * @param null|string $key           Ключ для получения данных из определенного поля
+ * @param string      $default_value Данные, которые возвращаются в случае, если нужное поле не заполнено или отсутствует
+ *
+ * @return array|string Данные, обработанные с помощью функции htmlspecialchars()
+ */
 function post($key = null, $default_value = '') {
     if ($key) {
         $value = isset($_POST[$key]) ? htmlspecialchars($_POST[$key]) : $default_value;
@@ -87,12 +87,12 @@ function post($key = null, $default_value = '') {
 }
 
 /**
-* Выполняет валидацию введенной пользователем даты
-*
-* @param array $form_data Массив с данными формы
-*
-* @return array Массив с данными формы и указанием ошибок, если таковые допущены
-*/
+ * Выполняет валидацию введенной пользователем даты
+ *
+ * @param array $form_data Массив с данными формы
+ *
+ * @return array Массив с данными формы и указанием ошибок, если таковые допущены
+ */
 function validate_date($form_data) {
     $is_date_format_correct = false;
     $date = $form_data['fields']['expiration_date'];
@@ -119,13 +119,13 @@ function validate_date($form_data) {
 }
 
 /**
-* Выполняет валидацию введенного пользователем электронного адреса
-*
-* @param mysqli $link Ресурс соединения
-* @param array $form_data Массив с данными формы
-*
-* @return array Массив с данными формы и указанием ошибок, если таковые допущены
-*/
+ * Выполняет валидацию введенного пользователем электронного адреса
+ *
+ * @param mysqli $link      Ресурс соединения
+ * @param array  $form_data Массив с данными формы
+ *
+ * @return array Массив с данными формы и указанием ошибок, если таковые допущены
+ */
 function validate_email($link, $form_data) {
     $result = filter_var($form_data['fields']['email'], FILTER_VALIDATE_EMAIL);
 
@@ -146,14 +146,14 @@ function validate_email($link, $form_data) {
 }
 
 /**
-* Выполняет валидацию введенных пользователем числовых значений
-*
-* @param array $form_data Массив с данными формы
-* @param array $numeric_fields Массив с полями, в которые должны быть введены числовые значения
-* @param integer $min Минимальное значение
-*
-* @return array Массив с данными формы и указанием ошибок, если таковые допущены
-*/
+ * Выполняет валидацию введенных пользователем числовых значений
+ *
+ * @param array $form_data      Массив с данными формы
+ * @param array $numeric_fields Массив с полями, в которые должны быть введены числовые значения
+ * @param int   $min            Минимальное значение
+ *
+ * @return array Массив с данными формы и указанием ошибок, если таковые допущены
+ */
 function validate_numeric_data($form_data, $numeric_fields, $min = 0) {
     foreach ($form_data['fields'] as $key => $value) {
         if (in_array($key, $numeric_fields)) {
