@@ -1,5 +1,5 @@
 <?php
-require_once 'functions.php';
+require_once 'format_functions.php';
 ?>
 <section class="lot-item container">
     <h2><?=$lot['title']; ?></h2>
@@ -43,7 +43,7 @@ require_once 'functions.php';
                 <?php foreach ($bets as $bet): ?>
                     <tr class="history__item">
                         <td class="history__name"><?=$bet['name']; ?></td>
-                        <td class="history__price"><?=$bet['cost']; ?> р</td>
+                        <td class="history__price"><?=format_price($bet['cost']); ?> р</td>
                         <td class="history__time"><?=convert_ts(strtotime($bet['betting_date'])); ?></td>
                     </tr>
                 <?php endforeach; ?>

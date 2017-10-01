@@ -1,5 +1,5 @@
 <?php
-require_once 'functions.php';
+require_once 'format_functions.php';
 ?>
 <section class="promo">
     <h2 class="promo__title">Нужен стафф для катки?</h2>
